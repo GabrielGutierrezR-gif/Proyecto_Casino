@@ -10,4 +10,16 @@
     <PackageReference Include="AutoMapper" Version="16.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Casino_Utilitarios\Casino_Utilitarios.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Clases\" />
+    <Folder Include="DTO\" />
+    <Folder Include="EntidadesTipadas\" />
+    <Folder Include="InterfacesAD\" />
+    <Folder Include="InterfacesLN\" />
+  </ItemGroup>
+
 </Project>

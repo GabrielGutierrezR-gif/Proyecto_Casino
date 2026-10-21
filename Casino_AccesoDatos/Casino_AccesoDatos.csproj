@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Casino_Dominio\Casino_Dominio.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Implementaciones\" />
-  </ItemGroup>
-
 </Project>

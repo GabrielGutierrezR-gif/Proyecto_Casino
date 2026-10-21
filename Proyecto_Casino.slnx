@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Casino_AccesoDatos/Casino_AccesoDatos.csproj" />
+  <Project Path="Casino_API/Casino_API.csproj" Id="f92c1cdf-4c40-4e4a-ac36-c6b8480b68c9" />
+  <Project Path="Casino_Dominio/Casino_Dominio.csproj" />
+  <Project Path="Casino_LogicaNegocios/Casino_LogicaNegocios.csproj" />
+  <Project Path="Casino_Utilitarios/Casino_Utilitarios.csproj" />
+</Solution>

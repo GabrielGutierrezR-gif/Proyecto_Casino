@@ -14,18 +14,21 @@ namespace Casino_LogicaNegocios.Implementaciones
         private readonly IUnidadTrabajoEF _unidadDeTrabajo;
         private readonly ILogger<UsuarioLN> _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguracionLN _configuracion;
 
         public UsuarioLN(
             IUnidadTrabajoEF unidadTrabajo,
             ILogger<UsuarioLN> logger,
-            IMapper mapper)
+            IMapper mapper,
+            IConfiguracionLN configuracion)
         {
             _unidadDeTrabajo = unidadTrabajo;
             _logger = logger;
             _mapper = mapper;
+            _configuracion = configuracion;
         }
 
-        // ========== RG1 + RG2: Registro ==========
+        // ========== Registro ==========
         public async Task<Respuesta<clsPerfilUsuario>> RegistrarAsync(clsRegistro datos)
         {
             var resultado = new Respuesta<clsPerfilUsuario>();
@@ -74,8 +77,8 @@ namespace Casino_LogicaNegocios.Implementaciones
                     return resultado;
                 }
 
-                // 3) Fichas de bienvenida desde la tabla Configuracion (RG2 / RG4)
-                int fichasBienvenida = await ObtenerConfiguracionEnteroAsync("FichasBienvenida", 500);
+                // 3) Fichas de bienvenida desde la tabla Configuracion 
+                int fichasBienvenida = await _configuracion.ObtenerEnteroAsync("FichasBienvenida", 500);
 
                 // 4) Crear el usuario con la contraseña encriptada (RNF3)
                 var usuario = new Usuario
@@ -182,18 +185,6 @@ namespace Casino_LogicaNegocios.Implementaciones
 
         // ========== Métodos de apoyo ==========
 
-        // Lee un valor numérico de la tabla Configuracion. Si no existe, usa el valor por defecto.
-        private async Task<int> ObtenerConfiguracionEnteroAsync(string clave, int porDefecto)
-        {
-            var config = await _unidadDeTrabajo.TConfiguracion.ObtenerEntidadAsync(x => x.Clave == clave);
-
-            if (config.Success && config.Data != null && int.TryParse(config.Data.Valor, out int valor))
-            {
-                return valor;
-            }
-
-            return porDefecto;
-        }
 
         private static bool CorreoValido(string correo)
         {

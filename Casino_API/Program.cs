@@ -34,6 +34,8 @@ builder.Services.AddSingleton<IUserIdProvider, UsuarioIdProvider>();
 builder.Services.AddSignalR();
 builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfile));
 builder.Services.AddSingleton<TokenService>();
+builder.Services.AddScoped<IPaProcedimientoAD, PaProcedimientoAD>();
+builder.Services.AddScoped<IHistorialLN, HistorialLN>();
 
 // Autenticación con JWT 
 // Revisa que el token de cada petición sea válido

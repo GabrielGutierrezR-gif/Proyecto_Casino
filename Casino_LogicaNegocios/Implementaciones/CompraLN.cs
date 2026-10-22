@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Casino_Dominio.Clases;
-using Casino_Dominio.Clases.Compras;
 using Casino_Dominio.Entidades;
 using Casino_Dominio.EntidadesTipadas;
 using Casino_Dominio.InterfacesAD;

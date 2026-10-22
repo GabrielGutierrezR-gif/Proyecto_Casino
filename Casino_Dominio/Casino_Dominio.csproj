@@ -14,9 +14,4 @@
     <ProjectReference Include="..\Casino_Utilitarios\Casino_Utilitarios.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Clases\" />
-    <Folder Include="InterfacesLN\" />
-  </ItemGroup>
-
 </Project>

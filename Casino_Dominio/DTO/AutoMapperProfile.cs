@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Casino_Dominio.Clases;
 using Casino_Dominio.Entidades;
 using Casino_Dominio.EntidadesTipadas;
 
@@ -26,6 +27,9 @@ namespace Casino_Dominio.DTO
 
             // Administración
             CreateMap<Configuracion, TConfiguracion>().ReverseMap();
+
+            // Clases de respuesta
+            CreateMap<Usuario, clsPerfilUsuario>();
         }
     }
 }

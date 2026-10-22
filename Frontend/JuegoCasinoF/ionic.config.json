@@ -1,0 +1,7 @@
+{
+  "name": "JuegoCasinoF",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

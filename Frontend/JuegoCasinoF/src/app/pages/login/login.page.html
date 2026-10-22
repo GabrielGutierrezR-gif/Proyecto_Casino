@@ -1,0 +1,67 @@
+<ion-content [fullscreen]="true">
+
+  <div class="login-container">
+
+    <div class="login-header">
+      <h1>CASINO</h1>
+      <p>La suerte está de tu lado</p>
+    </div>
+
+    <div class="login-card">
+
+      <h2>Iniciar sesión</h2>
+
+      <p class="subtitle">
+        Ingresa a tu cuenta para continuar
+      </p>
+
+      <form>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="text"
+            placeholder="Nombre de usuario"
+            autocomplete="username">
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="password"
+            placeholder="Contraseña"
+            autocomplete="current-password">
+          </ion-input>
+        </ion-item>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="login-button">
+
+          Iniciar sesión
+
+        </ion-button>
+
+      </form>
+
+      <p class="register-text">
+        ¿No tienes una cuenta?
+
+        <a routerLink="/registro">
+          Regístrate
+        </a>
+      </p>
+
+    </div>
+
+    <p class="footer-text">
+      Juega responsablemente
+    </p>
+
+  </div>
+
+</ion-content>

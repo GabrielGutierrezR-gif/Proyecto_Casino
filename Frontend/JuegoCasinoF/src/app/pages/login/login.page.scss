@@ -1,0 +1,234 @@
+ion-content {
+  --background: none;
+
+  background-image: url('/assets/imagenes/Fondo2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/*principal */
+
+.login-container {
+transform: translateX(10px); //mover derecha
+
+  min-height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 30px 8% 30px 30px;
+
+  box-sizing: border-box;
+
+  background: rgba(0, 0, 0, 0.25);
+}
+
+
+/* encabezado */
+
+.login-header {
+  width: 450px;
+
+  text-align: center;
+
+  margin-bottom: 22px;
+
+  h1 {
+    color: #f5c451;
+
+    font-size: 40px;
+
+    font-weight: 800;
+
+    margin: 0 0 8px;
+
+    letter-spacing: 5px;
+
+  }
+
+  p {
+    color: #d5d8dc;
+
+    font-size: 15px;
+
+    margin: 0;
+
+    letter-spacing: 0.5px;
+  }
+}
+
+
+/* la tarjeta del login */
+
+.login-card {
+  width: 450px;
+  max-width: 100%;
+
+  background: rgba(5, 5, 5, 0.72);
+
+  border: 1px solid rgba(212, 175, 55, 0.75);
+
+  border-radius: 20px;
+
+  padding: 30px 24px;
+
+  box-sizing: border-box;
+
+  backdrop-filter: blur(4px);
+
+  h2 {
+    color: #ffffff;
+
+    text-align: center;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    color: #aeb4ba;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    margin: 0 0 26px;
+  }
+}
+
+
+/* campos */
+
+.input-item {
+  --background: rgba(20, 23, 26, 0.95);
+
+  --color: #ffffff;
+
+  --border-radius: 12px;
+
+  --padding-start: 12px;
+
+  --inner-padding-end: 12px;
+
+  margin-bottom: 16px;
+
+  border: 1px solid #45494d;
+
+  border-radius: 12px;
+
+  transition: 0.2s ease;
+
+  ion-icon {
+    color: #d4af37;
+
+    font-size: 20px;
+
+    margin-right: 8px;
+  }
+
+  ion-input {
+    --color: #ffffff;
+
+    --placeholder-color: #8e959c;
+
+    --highlight-color-focused: #d4af37;
+  }
+}
+
+
+/* boton */
+
+.login-button {
+  --background: #d4af37;
+
+  --background-hover: #f5d76e;
+
+  --color: #101010;
+
+  --border-radius: 12px;
+
+  --box-shadow: none;
+
+  height: 48px;
+
+  margin-top: 12px;
+
+  font-weight: 800;
+
+  text-transform: none;
+
+  letter-spacing: 0.5px;
+}
+
+
+/* texto de registro */
+
+.register-text {
+  color: #b8bec5;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  margin: 24px 0 0;
+
+  a {
+    color: #f5c451;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    margin-left: 4px;
+  }
+}
+
+
+/* pie */
+
+.footer-text {
+  color: #777f86;
+
+  font-size: 12px;
+
+  text-align: center;
+
+  width: 450px;
+
+  margin: 20px 0 0;
+}
+
+
+
+/* pantallas pequeñas */
+
+
+@media (max-width: 900px) {
+
+  .login-container {
+    align-items: center;
+
+    padding: 25px 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .login-header {
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .footer-text {
+    width: 100%;
+    max-width: 450px;
+  }
+}
+

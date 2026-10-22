@@ -1,0 +1,87 @@
+<ion-content [fullscreen]="true">
+
+  <div class="registro-container">
+
+    <div class="registro-header">
+      <h1>Casino</h1>
+      <p>¡Crea tu cuenta y empieza a jugar!</p>
+    </div>
+
+    <div class="registro-card">
+
+      <h2>Crear cuenta</h2>
+
+      <p class="subtitle">
+        Regístrate para comenzar a disfrutar
+      </p>
+
+      <form>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="text"
+            placeholder="Nombre de usuario"
+            autocomplete="username">
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="email"
+            placeholder="Correo electrónico"
+            autocomplete="email">
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="password"
+            placeholder="Contraseña"
+            autocomplete="new-password">
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+
+          <ion-input
+            type="password"
+            placeholder="Confirmar contraseña"
+            autocomplete="new-password">
+          </ion-input>
+        </ion-item>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="registro-button">
+
+          Crear cuenta
+
+        </ion-button>
+
+      </form>
+
+      <p class="login-text">
+        ¿Ya tienes una cuenta?
+
+        <a routerLink="/login">
+          Iniciar sesión
+        </a>
+      </p>
+
+    </div>
+
+    <p class="footer-text">
+      Juega responsablemente ♠️ ♥️
+    </p>
+
+  </div>
+
+</ion-content>

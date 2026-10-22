@@ -12,15 +12,17 @@ namespace Casino_LogicaNegocios.Implementaciones
     {
         private readonly IUnidadTrabajoEF _unidadDeTrabajo;
         private readonly ILogger<SalaLN> _logger;
+        private readonly IConfiguracionLN _configuracion;
 
         // Estados posibles de una sala
         private const string EstadoEsperando = "Esperando";
         private const string EstadoCerrada = "Cerrada";
 
-        public SalaLN(IUnidadTrabajoEF unidadTrabajo, ILogger<SalaLN> logger)
+        public SalaLN(IUnidadTrabajoEF unidadTrabajo, ILogger<SalaLN> logger, IConfiguracionLN configuracion)
         {
             _unidadDeTrabajo = unidadTrabajo;
             _logger = logger;
+            _configuracion = configuracion;
         }
 
         // ========== Lista de salas públicas activas (RB1) ==========
@@ -148,7 +150,7 @@ namespace Casino_LogicaNegocios.Implementaciones
                 }
 
                 // 3) ¿Se alcanzó el máximo de salas activas? (RNF4)
-                int maxSalas = await ObtenerConfiguracionEnteroAsync("MaxSalasActivas", 5);
+                int maxSalas = await _configuracion.ObtenerEnteroAsync("MaxSalasActivas", 5);
                 var activas = await _unidadDeTrabajo.TSalasBlackjack.ContarAsync(x => x.Estado != EstadoCerrada);
 
                 if (activas.Data >= maxSalas)
@@ -251,7 +253,7 @@ namespace Casino_LogicaNegocios.Implementaciones
                 }
 
                 // 3) ¿Hay espacio? (máximo 4)
-                int maxJugadores = await ObtenerConfiguracionEnteroAsync("MaxJugadoresPorSala", 4);
+                int maxJugadores = await _configuracion.ObtenerEnteroAsync("MaxJugadoresPorSala", 4);
                 var cantidad = await _unidadDeTrabajo.TJugadoresBlackjack
                     .ContarAsync(x => x.IdSala == sala.Data.IdSala);
 
@@ -351,7 +353,7 @@ namespace Casino_LogicaNegocios.Implementaciones
         // Arma el clsSala con la cantidad de jugadores y sus nombres
         private async Task<clsSala> ConstruirSalaAsync(SalasBlackjack sala)
         {
-            int maxJugadores = await ObtenerConfiguracionEnteroAsync("MaxJugadoresPorSala", 4);
+            int maxJugadores = await _configuracion.ObtenerEnteroAsync("MaxJugadoresPorSala", 4);
 
             var jugadores = await _unidadDeTrabajo.TJugadoresBlackjack.BuscarAsync(x => x.IdSala == sala.IdSala);
             var idsUsuarios = jugadores.Data?.Select(j => j.IdUsuario).ToList() ?? new List<int>();
@@ -410,15 +412,6 @@ namespace Casino_LogicaNegocios.Implementaciones
             return codigo;
         }
 
-        // Lee un valor numérico de la tabla Configuracion (RG4)
-        private async Task<int> ObtenerConfiguracionEnteroAsync(string clave, int porDefecto)
-        {
-            var config = await _unidadDeTrabajo.TConfiguracion.ObtenerEntidadAsync(x => x.Clave == clave);
 
-            if (config.Success && config.Data != null && int.TryParse(config.Data.Valor, out int valor))
-                return valor;
-
-            return porDefecto;
-        }
     }
 }

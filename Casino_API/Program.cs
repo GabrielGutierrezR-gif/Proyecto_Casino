@@ -102,7 +102,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 app.UseAuthentication();   // primero: ¿quién eres?
 app.UseAuthorization();    // después: ¿tienes permiso?
 

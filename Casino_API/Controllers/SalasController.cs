@@ -12,10 +12,13 @@ namespace Casino_API.Controllers
     public class SalasController : ControllerBase
     {
         private readonly ISalaLN _salaLN;
+        private readonly IBlackjackLN _blackjackLN;
 
-        public SalasController(ISalaLN salaLN)
+        // Recibe SalaLN (lobby) y BlackjackLN (mesa en memoria)
+        public SalasController(ISalaLN salaLN, IBlackjackLN blackjackLN)
         {
             _salaLN = salaLN;
+            _blackjackLN = blackjackLN;
         }
 
         private int IdUsuario => int.Parse(User.FindFirst("sub")!.Value);
@@ -60,11 +63,11 @@ namespace Casino_API.Controllers
             return respuesta.Success ? Ok(respuesta) : BadRequest(respuesta);
         }
 
-        // POST api/salas/5/salir → salir (si queda vacía, se cierra)
+        // POST api/salas/5/salir → salir (avisa a la mesa si está jugando; si queda vacía, se cierra)
         [HttpPost("{idSala:int}/salir")]
         public async Task<IActionResult> Salir(int idSala)
         {
-            var respuesta = await _salaLN.SalirAsync(IdUsuario, idSala);
+            var respuesta = await _blackjackLN.SalirAsync(idSala, IdUsuario);
             return respuesta.Success ? Ok(respuesta) : BadRequest(respuesta);
         }
     }

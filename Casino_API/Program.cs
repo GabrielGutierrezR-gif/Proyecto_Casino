@@ -23,6 +23,8 @@ builder.Services.AddDbContext<CasinoContext>(opciones =>
 builder.Services.AddScoped<IUnidadTrabajoEF, UnidadTrabajoEF>();
 builder.Services.AddScoped<IUsuarioLN, UsuarioLN>();
 builder.Services.AddScoped<ICompraLN, CompraLN>();
+builder.Services.AddScoped<IRuletaLN, RuletaLN>();
+builder.Services.AddScoped<ISalaLN, SalaLN>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfile));
 builder.Services.AddSingleton<TokenService>();
 

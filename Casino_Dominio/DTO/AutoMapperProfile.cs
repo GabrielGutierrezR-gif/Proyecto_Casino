@@ -30,6 +30,11 @@ namespace Casino_Dominio.DTO
 
             // Clases de respuesta
             CreateMap<Usuario, clsPerfilUsuario>();
+
+            // La tarjeta siempre se muestra enmascarada
+            CreateMap<MetodosPago, clsMetodoPago>()
+                .ForMember(d => d.NumeroEnmascarado,
+                           o => o.MapFrom(s => "**** **** **** " + s.NumeroTarjeta));
         }
     }
 }

@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUsuarioLN, UsuarioLN>();
 builder.Services.AddScoped<ICompraLN, CompraLN>();
 builder.Services.AddScoped<IRuletaLN, RuletaLN>();
 builder.Services.AddScoped<ISalaLN, SalaLN>();
+builder.Services.AddScoped<IConfiguracionLN, ConfiguracionLN>();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfile));
 builder.Services.AddSingleton<TokenService>();

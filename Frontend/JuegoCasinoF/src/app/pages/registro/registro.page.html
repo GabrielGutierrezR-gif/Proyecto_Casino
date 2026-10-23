@@ -1,3 +1,4 @@
+
 <ion-content [fullscreen]="true">
 
   <div class="registro-container">
@@ -9,65 +10,105 @@
 
     <div class="registro-card">
 
-      <h2>Crear cuenta</h2>
+      <h2>Crea tu cuenta</h2>
 
       <p class="subtitle">
         Regístrate para comenzar a disfrutar
       </p>
 
-      <form>
+      <form (ngSubmit)="registrar()">
 
+        <!-- Nombre de usuario -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="person-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
+            name="nombreUsuario"
             type="text"
             placeholder="Nombre de usuario"
-            autocomplete="username">
+            autocomplete="username"
+            [(ngModel)]="nombreUsuario"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Correo electrónico -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="mail-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
+            name="correo"
             type="email"
             placeholder="Correo electrónico"
-            autocomplete="email">
+            autocomplete="email"
+            [(ngModel)]="correo"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Contraseña -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="lock-closed-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
+            name="password"
             type="password"
             placeholder="Contraseña"
-            autocomplete="new-password">
+            autocomplete="new-password"
+            [(ngModel)]="password"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Confirmar contraseña -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="lock-closed-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
+            name="confirmarPassword"
             type="password"
             placeholder="Confirmar contraseña"
-            autocomplete="new-password">
+            autocomplete="new-password"
+            [(ngModel)]="confirmarPassword"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Mensajes de validación y respuesta del servidor -->
+
+@if (mensaje) {
+  <p [style.color]="esError ? '#ff7070' : '#f5c451'">
+    {{ mensaje }}
+  </p>
+}
+
+
+        <!-- Botón de registro -->
         <ion-button
           expand="block"
           type="submit"
-          class="registro-button">
+          class="registro-button"
+          [disabled]="cargando">
 
-          Crear cuenta
+          {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
 
         </ion-button>
 
       </form>
 
+      <!-- Enlace para iniciar sesión -->
       <p class="login-text">
         ¿Ya tienes una cuenta?
 
@@ -79,7 +120,7 @@
     </div>
 
     <p class="footer-text">
-      Juega responsablemente ♠️ ♥️
+      Juega responsablemente
     </p>
 
   </div>

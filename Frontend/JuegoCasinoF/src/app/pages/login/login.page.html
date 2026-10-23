@@ -1,3 +1,4 @@
+
 <ion-content [fullscreen]="true">
 
   <div class="login-container">
@@ -15,39 +16,63 @@
         Ingresa a tu cuenta para continuar
       </p>
 
-      <form>
+      <form (ngSubmit)="iniciarSesion()">
 
+        <!-- Correo electrónico -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="person-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
-            type="text"
-            placeholder="Nombre de usuario"
-            autocomplete="username">
+            name="correo"
+            type="email"
+            placeholder="Correo electrónico"
+            autocomplete="email"
+            [(ngModel)]="correo"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Contraseña -->
         <ion-item lines="none" class="input-item">
-          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-icon
+            name="lock-closed-outline"
+            slot="start">
+          </ion-icon>
 
           <ion-input
+            name="password"
             type="password"
             placeholder="Contraseña"
-            autocomplete="current-password">
+            autocomplete="current-password"
+            [(ngModel)]="password"
+            required>
           </ion-input>
         </ion-item>
 
+        <!-- Mensaje de respuesta -->
+        @if (mensaje) {
+          <p [style.color]="esError ? '#ff7070' : '#f5c451'">
+            {{ mensaje }}
+          </p>
+        }
+
+        <!-- Botón de inicio de sesión -->
         <ion-button
           expand="block"
           type="submit"
-          class="login-button">
+          class="login-button"
+          [disabled]="cargando">
 
-          Iniciar sesión
+          {{ cargando ? 'Iniciando sesión...' : 'Iniciar sesión' }}
 
         </ion-button>
 
       </form>
 
+      <!-- Enlace a Registro -->
       <p class="register-text">
         ¿No tienes una cuenta?
 

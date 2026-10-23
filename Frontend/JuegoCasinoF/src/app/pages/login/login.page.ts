@@ -1,15 +1,20 @@
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   IonContent,
   IonItem,
   IonIcon,
   IonInput,
-  IonButton
+  IonButton,
+  AlertController
 } from '@ionic/angular';
+
+import { AuthService, RespuestaAPI, Sesion } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-login',
@@ -18,6 +23,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     IonContent,
     IonItem,
@@ -28,4 +34,87 @@ import {
 })
 export class LoginPage {
 
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private alertController = inject(AlertController);
+
+  correo = '';
+  password = '';
+
+  mensaje = '';
+  esError = false;
+  cargando = false;
+
+
+async iniciarSesion() {
+  this.mensaje = '';
+
+  if (!this.correo.trim() || !this.password) {
+    this.mensaje = 'Ingresa tu correo y contraseña.';
+    this.esError = true;
+    return;
+  }
+
+  this.cargando = true;
+
+  this.authService.login({
+    correo: this.correo.trim(),
+    password: this.password
+  }).subscribe({
+    next: async (respuesta: RespuestaAPI<Sesion>) => {
+      if (!respuesta.success || !respuesta.data) {
+        this.cargando = false;
+
+        const alerta = await this.alertController.create({
+          header: 'Datos incorrectos',
+          message: respuesta.error || 'No se pudo iniciar sesión. Verifica tus datos.',
+          buttons: ['Aceptar']
+        });
+
+        await alerta.present();
+        return;
+      }
+
+      sessionStorage.setItem('token', respuesta.data.token);
+      sessionStorage.setItem(
+        'usuario',
+        JSON.stringify(respuesta.data.usuario)
+      );
+
+      this.correo = '';
+      this.password = '';
+
+      this.esError = false;
+      this.cargando = false;
+
+      await this.router.navigateByUrl('/home');
+    },
+
+    error: async (error: any) => {
+      this.cargando = false;
+
+      if (error.status === 401) {
+        const alerta = await this.alertController.create({
+          header: 'Datos incorrectos',
+          message: 'El correo electrónico o la contraseña son incorrectos. Verifica tus datos e inténtalo de nuevo.',
+          buttons: ['Aceptar']
+        });
+
+        await alerta.present();
+        return;
+      }
+
+      const alerta = await this.alertController.create({
+        header: 'Error de conexión',
+        message:
+          error.error?.error ||
+          error.error?.message ||
+          'No se pudo conectar con el servidor. Inténtalo de nuevo.',
+        buttons: ['Aceptar']
+      });
+
+      await alerta.present();
+    }
+  });
+}
 }

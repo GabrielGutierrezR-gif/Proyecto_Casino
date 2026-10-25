@@ -7,12 +7,16 @@
         <p>ROYAL CLUB</p>
       </div>
 
-      <ion-button
-        fill="outline"
-        color="warning"
-        routerLink="/home">
-        Volver al casino
-      </ion-button>
+      <div class="header-actions">
+        <span class="balance-pill">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+
+        <ion-button
+          fill="outline"
+          color="warning"
+          routerLink="/home">
+          Volver al casino
+        </ion-button>
+      </div>
     </header>
 
     <section class="purchase-content">
@@ -22,21 +26,140 @@
         Prepárate para disfrutar tus partidas de Blackjack y Ruleta.
       </p>
 
-      <div class="coming-soon">
-        <span class="chip-icon">💰</span>
-        <h2>Próximamente</h2>
-        <p>
-          Aquí podrás consultar los paquetes de fichas disponibles
-          y realizar tus compras de forma segura.
-        </p>
-      </div>
+      @if (cargando()) {
+        <p class="description">Cargando paquetes...</p>
+      } @else {
 
-      <ion-button
-        expand="block"
-        color="warning"
-        routerLink="/home">
-        Regresar al inicio
-      </ion-button>
+        <!-- PAQUETES -->
+        <h2 class="step-title">1. Elige un paquete</h2>
+
+        <div class="packages">
+          @for (paquete of paquetes(); track paquete.idPaquete) {
+            <button
+              type="button"
+              class="package-card"
+              [class.selected]="paqueteSeleccionado() === paquete.idPaquete"
+              (click)="paqueteSeleccionado.set(paquete.idPaquete)">
+              <span class="chip-icon">💰</span>
+              <strong>{{ paquete.nombre }}</strong>
+              <span class="package-chips">{{ paquete.cantidadFichas }} fichas</span>
+              <span class="package-price">${{ paquete.precio | number:'1.2-2' }}</span>
+            </button>
+          } @empty {
+            <p class="description">No hay paquetes disponibles.</p>
+          }
+        </div>
+
+        <!-- MÉTODO DE PAGO -->
+        <h2 class="step-title">2. Método de pago</h2>
+
+        <div class="cards">
+          @for (metodo of metodos(); track metodo.idMetodoPago) {
+            <button
+              type="button"
+              class="card-option"
+              [class.selected]="metodoSeleccionado() === metodo.idMetodoPago"
+              (click)="metodoSeleccionado.set(metodo.idMetodoPago)">
+              <span class="card-type">{{ metodo.tipoTarjeta === 'Credito' ? 'Crédito' : 'Débito' }}</span>
+              <strong>{{ metodo.numeroEnmascarado }}</strong>
+              <small>{{ metodo.nombreTitular }}</small>
+            </button>
+          }
+
+          @if (!mostrarFormulario()) {
+            <button
+              type="button"
+              class="card-option add-card"
+              (click)="mostrarFormulario.set(true)">
+              + Agregar tarjeta
+            </button>
+          }
+        </div>
+
+        @if (mostrarFormulario()) {
+          <div class="card-form">
+            <p class="form-note">
+              Tarjeta ficticia: solo se guardan los últimos 4 dígitos.
+            </p>
+
+            <div class="type-options">
+              <button
+                type="button"
+                [class.selected]="tipoTarjeta() === 'Credito'"
+                (click)="tipoTarjeta.set('Credito')">
+                Crédito
+              </button>
+              <button
+                type="button"
+                [class.selected]="tipoTarjeta() === 'Debito'"
+                (click)="tipoTarjeta.set('Debito')">
+                Débito
+              </button>
+            </div>
+
+            <ion-input
+              label="Número de tarjeta"
+              labelPlacement="stacked"
+              fill="outline"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="0000 0000 0000 0000"
+              [ngModel]="numeroTarjeta()"
+              (ngModelChange)="formatearNumero($event)">
+            </ion-input>
+
+            <ion-input
+              label="Nombre del titular"
+              labelPlacement="stacked"
+              fill="outline"
+              maxlength="100"
+              placeholder="Como aparece en la tarjeta"
+              [(ngModel)]="nombreTitular">
+            </ion-input>
+
+            @if (mensajeTarjeta()) {
+              <p class="error-message">{{ mensajeTarjeta() }}</p>
+            }
+
+            <div class="form-buttons">
+              @if (metodos().length > 0) {
+                <ion-button
+                  fill="outline"
+                  color="medium"
+                  (click)="mostrarFormulario.set(false); mensajeTarjeta.set('')">
+                  Cancelar
+                </ion-button>
+              }
+
+              <ion-button
+                color="warning"
+                [disabled]="guardandoTarjeta()"
+                (click)="guardarTarjeta()">
+                {{ guardandoTarjeta() ? 'Guardando...' : 'Guardar tarjeta' }}
+              </ion-button>
+            </div>
+          </div>
+        }
+
+        @if (mensaje()) {
+          <p class="error-message">{{ mensaje() }}</p>
+        }
+
+        <ion-button
+          expand="block"
+          color="warning"
+          class="buy-button"
+          [disabled]="comprando() || !paqueteSeleccionado() || metodoSeleccionado() === null"
+          (click)="comprar()">
+          @if (comprando()) {
+            Procesando compra...
+          } @else if (paqueteActual()) {
+            Comprar {{ paqueteActual()!.cantidadFichas }} fichas por ${{ paqueteActual()!.precio | number:'1.2-2' }}
+          } @else {
+            Comprar
+          }
+        </ion-button>
+      }
     </section>
 
   </main>

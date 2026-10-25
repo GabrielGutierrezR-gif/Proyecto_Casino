@@ -88,9 +88,9 @@
 
         <!-- Mensajes de validación y respuesta del servidor -->
 
-@if (mensaje) {
-  <p [style.color]="esError ? '#ff7070' : '#f5c451'">
-    {{ mensaje }}
+@if (mensaje()) {
+  <p [style.color]="esError() ? '#ff7070' : '#f5c451'">
+    {{ mensaje() }}
   </p>
 }
 
@@ -100,9 +100,9 @@
           expand="block"
           type="submit"
           class="registro-button"
-          [disabled]="cargando">
+          [disabled]="cargando()">
 
-          {{ cargando ? 'Creando cuenta...' : 'Crear cuenta' }}
+          {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
 
         </ion-button>
 

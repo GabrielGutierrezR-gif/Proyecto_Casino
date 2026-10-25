@@ -1,9 +1,12 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 
-const API_URL = 'https://localhost:7187/api/Auth';
-const USUARIOS_URL = 'https://localhost:7187/api/Usuarios';
+import { environment } from '../../environments/environment';
+
+const API_URL = `${environment.apiUrl}/Auth`;
+const USUARIOS_URL = `${environment.apiUrl}/Usuarios`;
 
 export interface Usuario {
   idUsuario: number;
@@ -31,6 +34,13 @@ export interface RespuestaAPI<T> {
 export class AuthService {
 
   private http = inject(HttpClient);
+  private router = inject(Router);
+
+  // Usuario logueado, compartido por todas las pantallas (el saldo se ve igual en todas)
+  private usuarioActual = signal<Usuario | null>(this.leerUsuarioGuardado());
+
+  readonly usuario = this.usuarioActual.asReadonly();
+  readonly esAdmin = computed(() => this.usuarioActual()?.rol === 'Admin');
 
   // LOGIN
   login(datos: {
@@ -58,31 +68,78 @@ export class AuthService {
   }
 
   // OBTENER PERFIL DEL USUARIO LOGUEADO
+  // El token lo agrega el authInterceptor.
   obtenerPerfil(): Observable<RespuestaAPI<Usuario>> {
-
-    const token = sessionStorage.getItem('token');
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    return this.http.get<RespuestaAPI<Usuario>>(
-      `${USUARIOS_URL}/perfil`,
-      { headers }
-    );
+    return this.http
+      .get<RespuestaAPI<Usuario>>(`${USUARIOS_URL}/perfil`)
+      .pipe(tap(respuesta => {
+        if (respuesta.success && respuesta.data) {
+          this.guardarUsuario(respuesta.data);
+        }
+      }));
   }
 
   actualizarNombreUsuario(nuevoNombre: string): Observable<RespuestaAPI<Usuario>> {
-    const token = sessionStorage.getItem('token');
+    return this.http
+      .put<RespuestaAPI<Usuario>>(`${USUARIOS_URL}/nombre`, { nuevoNombre })
+      .pipe(tap(respuesta => {
+        if (respuesta.success && respuesta.data) {
+          this.guardarUsuario(respuesta.data);
+        }
+      }));
+  }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  // ================================
+  // SESIÓN
+  // ================================
 
-    return this.http.put<RespuestaAPI<Usuario>>(
-      'https://localhost:7187/api/Usuarios/nombre',
-      { nuevoNombre },
-      { headers }
-    );
+  get token(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  estaLogueado(): boolean {
+    return !!this.token;
+  }
+
+  iniciarSesion(sesion: Sesion): void {
+    sessionStorage.setItem('token', sesion.token);
+    this.guardarUsuario(sesion.usuario);
+  }
+
+  guardarUsuario(usuario: Usuario): void {
+    sessionStorage.setItem('usuario', JSON.stringify(usuario));
+    this.usuarioActual.set(usuario);
+  }
+
+  // Después de apostar, comprar o cobrar: el saldo cambia en todas las pantallas
+  actualizarSaldo(saldo: number): void {
+    const usuario = this.usuarioActual();
+
+    if (usuario) {
+      this.guardarUsuario({ ...usuario, saldoFichas: saldo });
+    }
+  }
+
+  cerrarSesion(): void {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('usuario');
+    this.usuarioActual.set(null);
+
+    this.router.navigateByUrl('/login', { replaceUrl: true });
+  }
+
+  private leerUsuarioGuardado(): Usuario | null {
+    const guardado = sessionStorage.getItem('usuario');
+
+    if (!guardado) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(guardado) as Usuario;
+    } catch {
+      sessionStorage.removeItem('usuario');
+      return null;
+    }
   }
 }

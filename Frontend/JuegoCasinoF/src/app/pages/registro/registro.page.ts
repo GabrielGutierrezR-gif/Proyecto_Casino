@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -39,78 +39,76 @@ export class RegistroPage {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  nombreUsuario = '';
-  correo = '';
-  password = '';
-  confirmarPassword = '';
+  nombreUsuario = signal('');
+  correo = signal('');
+  password = signal('');
+  confirmarPassword = signal('');
 
-  mensaje = '';
-  esError = false;
-  cargando = false;
+  mensaje = signal('');
+  esError = signal(false);
+  cargando = signal(false);
 
   registrar(): void {
-    this.mensaje = '';
+    this.mensaje.set('');
 
     // 1. Validar que todos los campos estén completos
     if (
-      !this.nombreUsuario.trim() ||
-      !this.correo.trim() ||
-      !this.password ||
-      !this.confirmarPassword
+      !this.nombreUsuario().trim() ||
+      !this.correo().trim() ||
+      !this.password() ||
+      !this.confirmarPassword()
     ) {
-      this.mensaje = 'Completa todos los campos.';
-      this.esError = true;
+      this.mensaje.set('Completa todos los campos.');
+      this.esError.set(true);
       return;
     }
 
     // 2. Validar el formato del correo
     const correoValido =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.correo.trim());
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.correo().trim());
 
     if (!correoValido) {
-      this.mensaje = 'Ingresa una dirección de correo válida.';
-      this.esError = true;
+      this.mensaje.set('Ingresa una dirección de correo válida.');
+      this.esError.set(true);
       return;
     }
 
-    // 3. Exigir al menos 9 caracteres en la contraseña
-    if (this.password.length < 8) {
-      this.mensaje =
-        'La contraseña debe tener al menos 8 caracteres.';
-      this.esError = true;
+    // 3. Exigir al menos 8 caracteres en la contraseña
+    if (this.password().length < 8) {
+      this.mensaje.set('La contraseña debe tener al menos 8 caracteres.');
+      this.esError.set(true);
       return;
     }
 
     // 4. Confirmar que las contraseñas coincidan
-    if (this.password !== this.confirmarPassword) {
-      this.mensaje = 'Las contraseñas no coinciden.';
-      this.esError = true;
+    if (this.password() !== this.confirmarPassword()) {
+      this.mensaje.set('Las contraseñas no coinciden.');
+      this.esError.set(true);
       return;
     }
 
     // 5. Enviar los datos a la API
-    this.cargando = true;
+    this.cargando.set(true);
 
     this.authService.registro({
-      nombreUsuario: this.nombreUsuario.trim(),
-      correo: this.correo.trim(),
-      password: this.password
+      nombreUsuario: this.nombreUsuario().trim(),
+      correo: this.correo().trim(),
+      password: this.password()
     }).subscribe({
 
       next: (respuesta: RespuestaAPI<Sesion>) => {
 
         if (!respuesta.success || !respuesta.data) {
-          this.mensaje =
-            respuesta.error || 'No se pudo crear la cuenta.';
+          this.mensaje.set(respuesta.error || 'No se pudo crear la cuenta.');
 
-          this.esError = true;
-          this.cargando = false;
+          this.esError.set(true);
+          this.cargando.set(false);
           return;
         }
 
         // 6. Registro exitoso: no iniciar sesión automáticamente
-        this.cargando = false;
-        this.esError = false;
+        this.cargando.set(false);
+        this.esError.set(false);
 
         // 7. Regresar a Login para iniciar sesión manualmente
         this.router.navigateByUrl('/login', {
@@ -119,13 +117,10 @@ export class RegistroPage {
       },
 
       error: (error: any) => {
-        this.mensaje =
-          error.error?.error ||
-          error.error?.message ||
-          'No se pudo conectar con el servidor. Inténtalo de nuevo.';
+        this.mensaje.set(error.error?.error || error.error?.message || 'No se pudo conectar con el servidor. Inténtalo de nuevo.');
 
-        this.esError = true;
-        this.cargando = false;
+        this.esError.set(true);
+        this.cargando.set(false);
       }
 
     });

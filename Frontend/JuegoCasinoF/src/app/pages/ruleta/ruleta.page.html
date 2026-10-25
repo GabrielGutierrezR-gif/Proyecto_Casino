@@ -1,0 +1,223 @@
+<ion-content [fullscreen]="true">
+
+  <div class="ruleta-page">
+
+    <!-- ENCABEZADO -->
+    <header class="top-header">
+
+      <div class="brand">
+        <h1>CASINO ROYAL</h1>
+        <p>RULETA EUROPEA</p>
+      </div>
+
+      <div class="header-right">
+        <span class="balance-pill">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+
+        <a routerLink="/home" class="back-link">
+          ← Volver al casino
+        </a>
+      </div>
+
+    </header>
+
+
+    <main class="ruleta-container">
+
+      <!-- RUEDA -->
+      <section class="wheel-section">
+
+        <div class="wheel-wrapper">
+
+          <div class="pointer"></div>
+
+          <svg
+            class="wheel"
+            viewBox="0 0 200 200"
+            [style.transform]="'rotate(' + rotacion() + 'deg)'"
+            [style.transition-duration]="girando() ? '5s' : '0s'">
+
+            <circle cx="100" cy="100" r="99" class="wheel-rim" />
+
+            @for (segmento of segmentos; track segmento.numero) {
+              <path [attr.d]="segmento.ruta" [attr.class]="'segment ' + segmento.color.toLowerCase()" />
+              <text
+                [attr.x]="segmento.textoX"
+                [attr.y]="segmento.textoY"
+                [attr.transform]="'rotate(' + segmento.rotacion + ' ' + segmento.textoX + ' ' + segmento.textoY + ')'"
+                class="segment-number">
+                {{ segmento.numero }}
+              </text>
+            }
+
+            <circle cx="100" cy="100" r="58" class="wheel-center" />
+            <circle cx="100" cy="100" r="12" class="wheel-hub" />
+          </svg>
+
+        </div>
+
+        <!-- RESULTADO -->
+        <div class="result-panel">
+          @if (girando()) {
+            <p class="spinning-text">La bola está girando...</p>
+          } @else if (resultado(); as giro) {
+            <div [class]="'winning-number ' + giro.colorGanador.toLowerCase()">
+              {{ giro.numeroGanador }}
+            </div>
+
+            <p class="result-summary">
+              Apostaste {{ giro.totalApostado }} ·
+              @if (giro.totalGanado > 0) {
+                <strong class="win">ganaste {{ giro.totalGanado }}</strong>
+              } @else {
+                <strong class="loss">no hubo premio</strong>
+              }
+            </p>
+
+            <ul class="result-detail">
+              @for (apuesta of giro.detalle; track $index) {
+                <li [class.win]="apuesta.resultado === 'Gana'">
+                  {{ textoApuesta(apuesta.tipoApuesta, apuesta.valorApuesta) }} ({{ apuesta.monto }})
+                  <span>{{ apuesta.ganancia > 0 ? '+' : '' }}{{ apuesta.ganancia }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="spinning-text">Coloca tus fichas y gira la ruleta</p>
+          }
+
+          @if (historial().length > 0) {
+            <div class="history">
+              <span>Últimos:</span>
+              @for (tiro of historial(); track $index) {
+                <span [class]="'history-number ' + tiro.color.toLowerCase()">{{ tiro.numero }}</span>
+              }
+            </div>
+          }
+        </div>
+
+      </section>
+
+
+      <!-- TAPETE -->
+      <section class="board-section">
+
+        <div class="board">
+
+          <button
+            type="button"
+            class="cell zero verde"
+            (click)="apostar('Numero', 0)"
+            (contextmenu)="quitar($event, 'Numero', 0)">
+            0
+            @if (montoEn('Numero', 0)) { <span class="bet-chip">{{ montoEn('Numero', 0) }}</span> }
+          </button>
+
+          <div class="numbers">
+            @for (fila of filasTapete; track $index) {
+              @for (numero of fila; track numero) {
+                <button
+                  type="button"
+                  [class]="'cell ' + colorDe(numero).toLowerCase()"
+                  (click)="apostar('Numero', numero)"
+                  (contextmenu)="quitar($event, 'Numero', numero)">
+                  {{ numero }}
+                  @if (montoEn('Numero', numero)) { <span class="bet-chip">{{ montoEn('Numero', numero) }}</span> }
+                </button>
+              }
+            }
+          </div>
+
+          <div class="dozens">
+            @for (docena of [1, 2, 3]; track docena) {
+              <button
+                type="button"
+                class="cell outside"
+                (click)="apostar('Docena', docena)"
+                (contextmenu)="quitar($event, 'Docena', docena)">
+                {{ docena === 1 ? '1 a 12' : docena === 2 ? '13 a 24' : '25 a 36' }}
+                @if (montoEn('Docena', docena)) { <span class="bet-chip">{{ montoEn('Docena', docena) }}</span> }
+              </button>
+            }
+          </div>
+
+          <div class="even-bets">
+            <button type="button" class="cell outside"
+              (click)="apostar('ParImpar', 'Par')" (contextmenu)="quitar($event, 'ParImpar', 'Par')">
+              PAR
+              @if (montoEn('ParImpar', 'Par')) { <span class="bet-chip">{{ montoEn('ParImpar', 'Par') }}</span> }
+            </button>
+
+            <button type="button" class="cell rojo"
+              (click)="apostar('Color', 'Rojo')" (contextmenu)="quitar($event, 'Color', 'Rojo')">
+              ROJO
+              @if (montoEn('Color', 'Rojo')) { <span class="bet-chip">{{ montoEn('Color', 'Rojo') }}</span> }
+            </button>
+
+            <button type="button" class="cell negro"
+              (click)="apostar('Color', 'Negro')" (contextmenu)="quitar($event, 'Color', 'Negro')">
+              NEGRO
+              @if (montoEn('Color', 'Negro')) { <span class="bet-chip">{{ montoEn('Color', 'Negro') }}</span> }
+            </button>
+
+            <button type="button" class="cell outside"
+              (click)="apostar('ParImpar', 'Impar')" (contextmenu)="quitar($event, 'ParImpar', 'Impar')">
+              IMPAR
+              @if (montoEn('ParImpar', 'Impar')) { <span class="bet-chip">{{ montoEn('ParImpar', 'Impar') }}</span> }
+            </button>
+          </div>
+
+        </div>
+
+        <p class="board-hint">
+          Toca una casilla para apostar la ficha seleccionada · clic derecho para quitarla ·
+          Número paga 35:1 · Docena 2:1 · Color y Par/Impar 1:1
+        </p>
+
+        <!-- FICHAS -->
+        <div class="chips-area">
+          @for (ficha of fichas; track ficha.valor) {
+            <button
+              type="button"
+              class="chip-button"
+              [class.selected]="fichaSeleccionada() === ficha.valor"
+              [attr.aria-label]="'Usar ficha de ' + ficha.valor"
+              (click)="fichaSeleccionada.set(ficha.valor)">
+              <img [src]="ficha.imagen" [alt]="'Ficha de ' + ficha.valor" class="chip-image">
+              <span class="chip-value">{{ ficha.valor }}</span>
+            </button>
+          }
+        </div>
+
+        @if (mensaje()) {
+          <p class="error-message">{{ mensaje() }}</p>
+        }
+
+        <div class="board-actions">
+          <div class="total">
+            <span>TOTAL APOSTADO</span>
+            <strong>🪙 {{ totalApostado() }}</strong>
+          </div>
+
+          <ion-button
+            fill="outline"
+            color="warning"
+            [disabled]="girando() || totalApostado() === 0"
+            (click)="limpiar()">
+            Limpiar
+          </ion-button>
+
+          <ion-button
+            color="warning"
+            [disabled]="girando() || totalApostado() === 0"
+            (click)="girar()">
+            {{ girando() ? 'Girando...' : 'GIRAR' }}
+          </ion-button>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</ion-content>

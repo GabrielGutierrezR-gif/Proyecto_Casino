@@ -6,21 +6,16 @@
     <header class="top-header">
 
       <div class="brand">
-
-
         <div>
           <h1>CASINO ROYAL</h1>
           <p>BLACKJACK</p>
         </div>
-
       </div>
 
       <a
         routerLink="/blackjack/salas"
         class="back-link">
-
-        ← Salir de la sala
-
+        ← Volver a salas
       </a>
 
     </header>
@@ -29,242 +24,205 @@
     <!-- CONTENIDO -->
     <main class="sala-container">
 
+      @if (cargando()) {
+        <section class="status-card">
+          <div>
+            <strong>Cargando sala...</strong>
+          </div>
+        </section>
+      } @else if (!sala()) {
+        <section class="status-card">
+          <div>
+            <strong>{{ mensaje() }}</strong>
+            <p>Vuelve a la lista de salas para unirte a otra.</p>
+          </div>
+        </section>
 
-      <!-- INFORMACIÓN DE LA SALA -->
+        <section class="room-actions">
+          <ion-button color="warning" routerLink="/blackjack/salas">
+            Ver salas
+          </ion-button>
+        </section>
+      } @else if (sala(); as datos) {
 
-      <section class="room-header">
-
-        <div>
-
-          <span class="room-label">
-            SALA DE BLACKJACK
-          </span>
-
-          <h2>
-            {{ nombreSala }}
-          </h2>
-
-          <p>
-            Esperando jugadores...
-          </p>
-
-        </div>
-
-
-        <div class="room-code">
-
-          <span>CÓDIGO DE SALA</span>
-
-          <strong>
-            {{ codigoSala }}
-          </strong>
-
-        </div>
-
-      </section>
-
-
-      <!-- ESTADO -->
-
-      <section class="status-card">
-
-
-        <div>
-
-          <strong>
-            Esperando jugadores
-          </strong>
-
-          <p>
-            La partida comenzará cuando el creador
-            decida iniciar la mesa.
-          </p>
-
-        </div>
-
-      </section>
-
-
-      <!-- JUGADORES -->
-
-      <section class="players-section">
-
-        <div class="section-header">
+        <!-- INFORMACIÓN DE LA SALA -->
+        <section class="room-header">
 
           <div>
+            <span class="room-label">
+              SALA {{ datos.tipoSala === 'Privada' ? 'PRIVADA' : 'PÚBLICA' }} DE BLACKJACK
+            </span>
 
-            <h3>
-              Jugadores
-            </h3>
+            <h2>
+              {{ datos.nombreSala }}
+            </h2>
 
             <p>
-              Jugadores conectados a la mesa
+              {{ datos.estado === 'Jugando' ? 'Hay una ronda en curso' : 'Esperando jugadores...' }}
             </p>
+          </div>
+
+          <button
+            type="button"
+            class="room-code"
+            title="Copiar código"
+            (click)="copiarCodigo()">
+            <span>{{ copiado() ? '¡COPIADO!' : 'CÓDIGO DE SALA' }}</span>
+            <strong>
+              {{ datos.codigoSala }}
+            </strong>
+          </button>
+
+        </section>
+
+
+        <!-- ESTADO -->
+        <section class="status-card">
+          <div>
+            <strong>
+              ¿Cómo se juega?
+            </strong>
+            <p>
+              Comparte el código con tus amigos. Entra a la mesa y haz tu apuesta:
+              la ronda comienza cuando todos los jugadores conectados apuesten
+              o cuando alguien la inicie.
+            </p>
+          </div>
+        </section>
+
+
+        <!-- JUGADORES -->
+        <section class="players-section">
+
+          <div class="section-header">
+
+            <div>
+              <h3>
+                Jugadores
+              </h3>
+              <p>
+                Jugadores en esta sala
+              </p>
+            </div>
+
+            <span class="player-count">
+              {{ datos.cantidadJugadores }}/{{ datos.maxJugadores }}
+            </span>
 
           </div>
 
-          <span class="player-count">
-            {{ jugadores.length }}/{{ maxJugadores }}
-          </span>
 
-        </div>
+          <div class="players-list">
 
+            @for (nombre of datos.jugadores; track $index) {
 
-        <div class="players-list">
+              <div class="player-card">
 
-          @for (jugador of jugadores; track jugador.nombre) {
+                <div class="player-avatar">
+                  👤
+                </div>
 
-            <div class="player-card">
+                <div class="player-info">
+                  <strong>
+                    {{ nombre }}
+                  </strong>
 
-              <div class="player-avatar">
-                👤
-              </div>
+                  @if (nombre === usuario()?.nombreUsuario) {
+                    <span class="host-badge">
+                      TÚ
+                    </span>
+                  }
+                </div>
 
-
-              <div class="player-info">
-
-                <strong>
-                  {{ jugador.nombre }}
-                </strong>
-
-                @if (jugador.esCreador) {
-
-                  <span class="host-badge">
-                    CREADOR
-                  </span>
-
-                }
+                <div class="connection-status">
+                  <span class="connection-dot online"></span>
+                  <span>En la sala</span>
+                </div>
 
               </div>
 
+            }
 
-              <div class="connection-status">
 
-                <span
-                  class="connection-dot"
-                  [class.online]="jugador.conectado">
-                </span>
+            <!-- ESPACIOS VACÍOS -->
+            @for (espacio of espaciosLibres; track $index) {
+
+              <div class="empty-player">
+
+                <div class="empty-avatar">
+                  +
+                </div>
 
                 <span>
-                  Conectado
+                  Esperando jugador...
                 </span>
 
               </div>
 
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- REGLAS -->
+        <section class="rules-card">
+
+          <h3>
+            Reglas de esta mesa
+          </h3>
+
+          <div class="rules-grid">
+
+            <div>
+              <span>Jugadores</span>
+              <strong>Máximo {{ datos.maxJugadores }}</strong>
             </div>
 
-          }
-
-
-          <!-- ESPACIOS VACÍOS -->
-
-          @for (
-            espacio of [].constructor(maxJugadores - jugadores.length);
-            track $index
-          ) {
-
-            <div class="empty-player">
-
-              <div class="empty-avatar">
-                +
-              </div>
-
-              <span>
-                Esperando jugador...
-              </span>
-
+            <div>
+              <span>Dealer</span>
+              <strong>Pide con 16, se planta con 17</strong>
             </div>
 
-          }
+            <div>
+              <span>Blackjack</span>
+              <strong>3:2</strong>
+            </div>
 
-        </div>
-
-      </section>
-
-
-      <!-- REGLAS -->
-
-      <section class="rules-card">
-
-        <h3>
-          Reglas de esta mesa
-        </h3>
-
-        <div class="rules-grid">
-
-          <div>
-            <span>Jugadores</span>
-            <strong>Máximo {{ maxJugadores }}</strong>
-          </div>
-
-          <div>
-            <span>Dealer</span>
-            <strong>Automático</strong>
-          </div>
-
-          <div>
-            <span>Blackjack</span>
-            <strong>3:2</strong>
-          </div>
-
-          <div>
-            <span>Acciones</span>
-            <strong>Hit · Stand · Double · Split</strong>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- BOTONES -->
-
-      <section class="room-actions">
-
-        <ion-button
-          fill="outline"
-          color="warning"
-          routerLink="/blackjack/salas">
-
-          Salir de la sala
-
-        </ion-button>
-
-
-        <ion-button
-  color="warning"
-  routerLink="/blackjack/mesa"
-  (click)="comenzarPartida()">
-
-  Comenzar partida
-
-</ion-button>
-
-      </section>
-
-
-      @if (partidaIniciada) {
-
-        <div class="start-message">
-
-
-          <div>
-
-            <strong>
-              ¡La mesa está lista!
-            </strong>
-
-            <p>
-              Próximamente entraremos a la mesa
-              de Blackjack.
-            </p>
+            <div>
+              <span>Acciones</span>
+              <strong>Pedir · Plantarse · Doblar · Dividir</strong>
+            </div>
 
           </div>
 
-        </div>
+        </section>
 
+        @if (mensaje()) {
+          <p class="error-message">{{ mensaje() }}</p>
+        }
+
+
+        <!-- BOTONES -->
+        <section class="room-actions">
+
+          <ion-button
+            fill="outline"
+            color="warning"
+            [disabled]="saliendo()"
+            (click)="salirSala()">
+            {{ saliendo() ? 'Saliendo...' : 'Salir de la sala' }}
+          </ion-button>
+
+          <ion-button
+            color="warning"
+            (click)="entrarMesa()">
+            Entrar a la mesa
+          </ion-button>
+
+        </section>
       }
-
 
     </main>
 

@@ -36,8 +36,8 @@ ion-content {
 
 .purchase-content {
   width: 100%;
-  max-width: 650px;
-  margin: 65px auto;
+  max-width: 760px;
+  margin: 45px auto;
   text-align: center;
 }
 
@@ -58,28 +58,159 @@ ion-content {
   line-height: 1.7;
 }
 
-.coming-soon {
-  margin: 35px 0 25px;
-  padding: 35px 25px;
-  background: #0d0d0d;
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.balance-pill {
+  padding: 8px 14px;
   border: 1px solid #69552e;
-  border-radius: 18px;
+  border-radius: 999px;
+  color: #f5c451;
+  font-weight: 700;
+}
+
+.step-title {
+  margin: 38px 0 16px;
+  color: #f5c451;
+  font-size: 18px;
+  text-align: left;
 }
 
 .chip-icon {
-  color: #f5c451;
-  font-size: 58px;
+  font-size: 40px;
 }
 
-.coming-soon h2 {
-  color: #f5c451;
+/* PAQUETES */
+.packages,
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
 }
 
-.coming-soon p {
-  max-width: 420px;
-  margin: 0 auto;
+.package-card,
+.card-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 22px 16px;
+  color: #fff;
+  background: #0d0d0d;
+  border: 1px solid #292929;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.package-card:hover,
+.card-option:hover {
+  border-color: #69552e;
+  transform: translateY(-2px);
+}
+
+.package-card.selected,
+.card-option.selected {
+  border-color: #f5c451;
+  box-shadow: 0 0 0 1px #f5c451;
+}
+
+.package-card strong {
+  font-size: 17px;
+}
+
+.package-chips {
   color: #aaa;
-  line-height: 1.7;
+}
+
+.package-price {
+  color: #f5c451;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+/* TARJETAS */
+.card-option {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.card-type {
+  color: #f5c451;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.card-option small {
+  color: #929292;
+}
+
+.add-card {
+  align-items: center;
+  justify-content: center;
+  color: #f5c451;
+  border-style: dashed;
+  font-weight: 700;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 22px;
+  text-align: left;
+  background: #0d0d0d;
+  border: 1px solid #69552e;
+  border-radius: 16px;
+}
+
+.form-note {
+  margin: 0;
+  color: #929292;
+  font-size: 13px;
+}
+
+.type-options {
+  display: flex;
+  gap: 10px;
+}
+
+.type-options button {
+  flex: 1;
+  padding: 10px;
+  color: #aaa;
+  background: transparent;
+  border: 1px solid #292929;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.type-options button.selected {
+  color: #050505;
+  background: #f5c451;
+  border-color: #f5c451;
+  font-weight: 700;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.error-message {
+  margin: 14px 0 0;
+  color: #ff8a80;
+}
+
+.buy-button {
+  margin-top: 30px;
 }
 
 ion-button {
@@ -98,6 +229,11 @@ ion-button {
   }
 
   .purchase-content {
-    margin-top: 40px;
+    margin-top: 30px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }

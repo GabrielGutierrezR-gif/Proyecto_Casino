@@ -8,10 +8,11 @@ import {
   PreloadAllModules
 } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { authInterceptor } from './app/interceptors/auth.interceptor';
 
 import { addIcons } from 'ionicons';
 import {
@@ -35,6 +36,6 @@ bootstrapApplication(AppComponent, {
       withPreloading(PreloadAllModules),
       withComponentInputBinding()
     ),
-    provideHttpClient()
+    provideHttpClient(withInterceptors([authInterceptor]))
   ],
 });

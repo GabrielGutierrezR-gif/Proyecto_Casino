@@ -54,7 +54,9 @@
 
             <ion-input
               [(ngModel)]="nombreSala"
-              placeholder="Ej. Mesa Royal">
+              maxlength="50"
+              placeholder="Ej. Mesa Royal"
+              (keyup.enter)="crearSala()">
             </ion-input>
           </ion-item>
 
@@ -75,8 +77,8 @@
             <button
               type="button"
               class="privacy-option"
-              [class.selected]="!salaPrivada"
-              (click)="salaPrivada = false">
+              [class.selected]="!salaPrivada()"
+              (click)="salaPrivada.set(false)">
 
 
               <span>
@@ -90,8 +92,8 @@
             <button
               type="button"
               class="privacy-option"
-              [class.selected]="salaPrivada"
-              (click)="salaPrivada = true">
+              [class.selected]="salaPrivada()"
+              (click)="salaPrivada.set(true)">
 
 
               <span>
@@ -106,68 +108,16 @@
         </div>
 
 
-        <!-- JUGADORES -->
+        <!-- LÍMITES (los define el administrador) -->
         <div class="form-section">
 
-          <h3>Jugadores</h3>
+          <h3>Límites de la mesa</h3>
 
           <p class="section-description">
-            El máximo permitido es de 4 jugadores por sala.
+            Todas las mesas usan los mismos límites, definidos por el casino:
+            máximo 4 jugadores y la apuesta mínima y máxima configuradas
+            por el administrador.
           </p>
-
-          <ion-item class="casino-input">
-            <ion-label position="stacked">
-              Máximo de jugadores
-            </ion-label>
-
-            <ion-input
-              type="number"
-              [(ngModel)]="maxJugadores"
-              min="1"
-              max="4">
-            </ion-input>
-          </ion-item>
-
-        </div>
-
-
-        <!-- APUESTAS -->
-        <div class="form-section">
-
-          <h3>Límites de apuesta</h3>
-
-          <p class="section-description">
-            Define los límites de fichas para esta mesa.
-          </p>
-
-          <div class="bet-grid">
-
-            <ion-item class="casino-input">
-              <ion-label position="stacked">
-                Apuesta mínima
-              </ion-label>
-
-              <ion-input
-                type="number"
-                [(ngModel)]="apuestaMinima"
-                min="1">
-              </ion-input>
-            </ion-item>
-
-
-            <ion-item class="casino-input">
-              <ion-label position="stacked">
-                Apuesta máxima
-              </ion-label>
-
-              <ion-input
-                type="number"
-                [(ngModel)]="apuestaMaxima"
-                min="1">
-              </ion-input>
-            </ion-item>
-
-          </div>
 
         </div>
 
@@ -181,12 +131,17 @@
             <li>Máximo 4 jugadores por sala.</li>
             <li>El dealer juega automáticamente.</li>
             <li>El jugador pierde si supera 21.</li>
-            <li>Blackjack natural: pago recomendado 3:2.</li>
+            <li>Blackjack natural paga 3:2.</li>
+            <li>Cada jugador tiene un tiempo límite por turno.</li>
             <li>Se permite pedir, plantarse, doblar y dividir.</li>
           </ul>
 
         </div>
 
+
+        @if (mensaje()) {
+          <p class="error-message">{{ mensaje() }}</p>
+        }
 
         <!-- BOTONES -->
         <div class="form-actions">
@@ -199,11 +154,11 @@
           </ion-button>
 
           <ion-button
-  color="warning"
-  routerLink="/blackjack/sala"
-  (click)="crearSala()">
-  Crear sala
-</ion-button>
+            color="warning"
+            [disabled]="creando()"
+            (click)="crearSala()">
+            {{ creando() ? 'Creando...' : 'Crear sala' }}
+          </ion-button>
 
         </div>
 

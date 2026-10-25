@@ -10,223 +10,377 @@
 
       <div class="casino-title">
         <span class="crown">♛</span>
-        CASINO ROYAL
+        <span class="casino-name">CASINO ROYAL</span>
       </div>
 
       <div class="game-title">
         BLACKJACK
+        @if (estado(); as mesa) {
+          <small>{{ mesa.nombreSala }} · {{ mesa.codigoSala }} · Ronda {{ mesa.numeroRonda }}</small>
+        }
       </div>
 
-      <ion-button
-        class="exit-button"
-        fill="clear"
-        routerLink="/blackjack/sala">
+      <div class="top-actions">
+        <ion-button
+          class="exit-button"
+          fill="clear"
+          (click)="volverASala()">
+          SALA
+        </ion-button>
 
-        SALIR
-
-      </ion-button>
+        <ion-button
+          class="exit-button"
+          fill="clear"
+          (click)="salir()">
+          SALIR
+        </ion-button>
+      </div>
 
     </div>
 
 
-    <!-- ================================= -->
-    <!-- INFORMACIÓN DEL DEALER -->
-    <!-- ================================= -->
+    @if (cargando()) {
 
-    <div class="dealer-area">
+      <div class="center-panel">Entrando a la mesa...</div>
 
-      <div class="section-title">
-        DEALER
+    } @else if (error()) {
+
+      <div class="center-panel">
+        <p>{{ error() }}</p>
+        <ion-button color="warning" (click)="volverASala()">Volver a la sala</ion-button>
       </div>
 
-      <div class="dealer-cards">
+    } @else if (estado(); as mesa) {
 
-        @for (carta of cartasDealer; track carta.nombre) {
+      @if (!conectado()) {
+        <div class="connection-banner">Reconectando con la mesa...</div>
+      }
 
-          <img
-            [src]="carta.imagen"
-            [alt]="carta.nombre"
-            class="playing-card">
+      <div class="table-layout">
 
+        <!-- ================================= -->
+        <!-- DEALER -->
+        <!-- ================================= -->
+
+        <div class="dealer-area">
+
+          <div class="section-title">
+            DEALER
+          </div>
+
+          <div class="cards-row">
+            @for (carta of mesa.cartasDealer; track $index) {
+              <img
+                [src]="imagenCarta(carta)"
+                [alt]="nombreCarta(carta)"
+                class="playing-card">
+            } @empty {
+              <img src="assets/cartas/card_empty.png" alt="" class="playing-card empty-card">
+              <img src="assets/cartas/card_empty.png" alt="" class="playing-card empty-card">
+            }
+          </div>
+
+          <div class="hand-value">
+            Valor: {{ mesa.puntosDealer ?? '—' }}
+          </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- MENSAJE CENTRAL -->
+        <!-- ================================= -->
+
+        <div class="game-message">
+
+          <div class="turn-indicator" [class.my-turn]="esMiTurno()">
+            {{ textoEstado() }}
+            @if (segundosRestantes() !== null) {
+              <span class="timer" [class.urgent]="(segundosRestantes() ?? 0) <= 5">
+                {{ segundosRestantes() }}s
+              </span>
+            }
+          </div>
+
+          <div class="message-text">
+            @if (aviso()) {
+              <span class="warning-text">{{ aviso() }}</span>
+            } @else {
+              {{ mensajes()[0] ?? 'Bienvenido a la mesa' }}
+            }
+          </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- OTROS JUGADORES -->
+        <!-- ================================= -->
+
+        @if (otrosJugadores().length > 0) {
+          <div class="others-area">
+            @for (jugador of otrosJugadores(); track jugador.idUsuario) {
+              <div
+                class="other-player"
+                [class.active]="mesa.turnoIdUsuario === jugador.idUsuario"
+                [class.offline]="!jugador.conectado">
+
+                <div class="other-name">
+                  {{ jugador.nombre }}
+                  @if (!jugador.conectado) { <small>(desconectado)</small> }
+                </div>
+
+                @for (mano of jugador.manos; track $index) {
+                  <div class="mini-cards">
+                    @for (carta of mano.cartas; track $index) {
+                      <img [src]="imagenCarta(carta)" [alt]="nombreCarta(carta)" class="mini-card">
+                    }
+                  </div>
+                  <div class="other-info">
+                    @if (mano.cartas.length > 0) { {{ mano.puntuacion }} pts · }
+                    🪙 {{ mano.apuesta }}
+                    @if (mano.estado !== 'Jugando') { · {{ mano.estado }} }
+                  </div>
+                } @empty {
+                  <div class="other-info">
+                    {{ mesa.fase === 'Apuestas' ? 'Pensando su apuesta...' : 'No juega esta ronda' }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
         }
 
-      </div>
 
-      <div class="dealer-value">
-        Valor: {{ valorDealer }}
-      </div>
+        <!-- ================================= -->
+        <!-- MIS MANOS -->
+        <!-- ================================= -->
 
-    </div>
+        <div class="player-area">
+
+          <div class="section-title">
+            {{ usuario()?.nombreUsuario ?? 'Tú' }}
+          </div>
+
+          <div class="my-hands">
+            @for (mano of yo()?.manos ?? []; track $index) {
+              <div class="my-hand" [class.active]="mano.esTurno">
+
+                <div class="cards-row">
+                  @for (carta of mano.cartas; track $index) {
+                    <img
+                      [src]="imagenCarta(carta)"
+                      [alt]="nombreCarta(carta)"
+                      class="playing-card">
+                  } @empty {
+                    <span class="waiting-cards">Esperando reparto...</span>
+                  }
+                </div>
+
+                <div class="hand-value">
+                  @if (mano.cartas.length > 0) {
+                    Valor: {{ mano.puntuacion }}
+                  }
+                  @if (mano.estado !== 'Jugando') {
+                    <span class="hand-state">{{ mano.estado }}</span>
+                  }
+                </div>
+
+              </div>
+            } @empty {
+              <span class="waiting-cards">
+                {{ mesa.fase === 'Apuestas' ? 'Haz tu apuesta para recibir cartas' : 'Espera a la siguiente ronda' }}
+              </span>
+            }
+          </div>
+
+        </div>
 
 
-    <!-- ================================= -->
-    <!-- MENSAJE CENTRAL -->
-    <!-- ================================= -->
+        <!-- ================================= -->
+        <!-- SALDO Y APUESTA -->
+        <!-- ================================= -->
 
-    <div class="game-message">
+        <div class="player-info">
 
-      <div class="turn-indicator">
-        {{ estadoJuego }}
-      </div>
+          <div class="info-box">
+            <span class="info-label">SALDO</span>
+            <span class="info-value">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+          </div>
 
-      <div class="message-text">
-        {{ mensajeJuego }}
-      </div>
+          <div class="info-box bet-box">
+            <span class="info-label">APUESTA</span>
+            <span class="info-value">
+              🪙
+              @if (yo()?.yaAposto) {
+                {{ manoEnTurno()?.apuesta ?? yo()?.manos?.[0]?.apuesta ?? 0 }}
+              } @else {
+                {{ apuestaPendiente() }}
+              }
+            </span>
+          </div>
 
-    </div>
+        </div>
 
 
-    <!-- ================================= -->
-    <!-- JUGADOR -->
-    <!-- ================================= -->
+        <!-- ================================= -->
+        <!-- FASE DE APUESTAS -->
+        <!-- ================================= -->
 
-    <div class="player-area">
+        @if (enApuestas()) {
 
-      <div class="section-title">
-        {{ nombreJugador }}
-      </div>
+          @if (!yo()?.yaAposto) {
+            <div class="chips-area">
+              @for (ficha of fichas; track ficha.valor) {
+                <button
+                  class="chip-button"
+                  [attr.aria-label]="'Agregar ficha de ' + ficha.valor"
+                  (click)="seleccionarFicha(ficha.valor)">
+                  <img
+                    [src]="ficha.imagen"
+                    [alt]="'Ficha de ' + ficha.valor"
+                    class="chip-image">
+                  <span class="chip-value">{{ ficha.valor }}</span>
+                </button>
+              }
+            </div>
+          }
 
-      <div class="player-cards">
+          <div class="action-area">
+            @if (!yo()?.yaAposto) {
+              <ion-button
+                class="game-button split-button"
+                fill="outline"
+                [disabled]="apuestaPendiente() === 0"
+                (click)="limpiarApuesta()">
+                LIMPIAR
+              </ion-button>
 
-        @for (carta of cartasJugador; track $index) {
+              <ion-button
+                class="game-button"
+                color="success"
+                [disabled]="enviando() || apuestaPendiente() === 0"
+                (click)="confirmarApuesta()">
+                APOSTAR
+              </ion-button>
+            }
 
-          <img
-            [src]="carta.imagen"
-            [alt]="carta.nombre"
-            class="playing-card">
+            @if (alguienAposto()) {
+              <ion-button
+                class="game-button"
+                color="warning"
+                [disabled]="enviando()"
+                (click)="iniciarRonda()">
+                REPARTIR
+              </ion-button>
+            }
+          </div>
 
+        } @else {
+
+          <!-- ================================= -->
+          <!-- ACCIONES DEL TURNO -->
+          <!-- ================================= -->
+
+          <div class="action-area">
+
+            <ion-button
+              class="game-button"
+              color="success"
+              [disabled]="!esMiTurno() || enviando()"
+              (click)="jugar('Pedir')">
+              PEDIR
+            </ion-button>
+
+            <ion-button
+              class="game-button"
+              color="warning"
+              [disabled]="!esMiTurno() || enviando()"
+              (click)="jugar('Plantarse')">
+              PLANTARSE
+            </ion-button>
+
+            <ion-button
+              class="game-button"
+              color="warning"
+              [disabled]="!manoEnTurno()?.puedeDoblar || enviando()"
+              (click)="jugar('Doblar')">
+              DOBLAR
+            </ion-button>
+
+            <ion-button
+              class="game-button split-button"
+              fill="outline"
+              [disabled]="!manoEnTurno()?.puedeDividir || enviando()"
+              (click)="jugar('Dividir')">
+              DIVIDIR
+            </ion-button>
+
+          </div>
         }
 
-      </div>
 
-      <div class="player-value">
-        Valor: {{ valorJugador }}
-      </div>
+        <!-- ================================= -->
+        <!-- REGLAS -->
+        <!-- ================================= -->
 
-    </div>
-
-
-    <!-- ================================= -->
-    <!-- INFORMACIÓN DEL JUGADOR -->
-    <!-- ================================= -->
-
-    <div class="player-info">
-
-      <div class="info-box">
-
-        <span class="info-label">
-          SALDO
-        </span>
-
-        <span class="info-value">
-          🪙 {{ saldo }}
-        </span>
+        <div class="bottom-rules">
+          <span>BLACKJACK 3:2</span>
+          <span>•</span>
+          <span>EL DEALER SE PLANTA CON 17</span>
+          <span>•</span>
+          <span>MÁX. 21</span>
+        </div>
 
       </div>
 
 
-      <div class="info-box bet-box">
+      <!-- ================================= -->
+      <!-- RESULTADO DE LA RONDA -->
+      <!-- ================================= -->
 
-        <span class="info-label">
-          APUESTA
-        </span>
+      @if (resultado(); as ronda) {
+        <div class="result-overlay">
+          <div class="result-card">
 
-        <span class="info-value">
-          🪙 {{ apuesta }}
-        </span>
+            <h2>Ronda {{ ronda.numeroRonda }}</h2>
 
-      </div>
+            <div class="result-dealer">
+              <span>Dealer: {{ ronda.puntosDealer }} {{ ronda.puntosDealer > 21 ? '(se pasó)' : '' }}</span>
+              <div class="mini-cards">
+                @for (carta of ronda.cartasDealer; track $index) {
+                  <img [src]="imagenCarta(carta)" [alt]="nombreCarta(carta)" class="mini-card">
+                }
+              </div>
+            </div>
 
-    </div>
+            @for (mano of misResultados(); track $index) {
+              <div
+                class="result-row mine"
+                [class.win]="mano.ganancia > 0"
+                [class.loss]="mano.ganancia < 0">
+                <strong>{{ textoResultado(mano.resultado) }}</strong>
+                <span>{{ mano.puntuacion }} pts · {{ mano.ganancia > 0 ? '+' : '' }}{{ mano.ganancia }} fichas</span>
+              </div>
+            }
 
+            @for (mano of ronda.resultados; track $index) {
+              @if (mano.idUsuario !== usuario()?.idUsuario) {
+                <div class="result-row">
+                  <span>{{ mano.nombre }}</span>
+                  <span>{{ mano.puntuacion }} pts · {{ mano.resultado }}</span>
+                </div>
+              }
+            }
 
-    <!-- ================================= -->
-    <!-- BOTONES -->
-    <!-- ================================= -->
-<div class="chips-area">
+            <ion-button expand="block" color="warning" (click)="cerrarResultado()">
+              SIGUIENTE RONDA
+            </ion-button>
 
-  @for (ficha of fichas; track ficha.valor) {
-
-    <button
-      class="chip-button"
-      (click)="seleccionarFicha(ficha.valor)">
-
-      <img
-        [src]="ficha.imagen"
-        [alt]="'Ficha de ' + ficha.valor"
-        class="chip-image">
-
-      <span class="chip-value">
-        {{ ficha.valor }}
-      </span>
-
-    </button>
-
-  }
-
-</div>
-
-    <div class="action-area">
-
-      <ion-button
-        class="game-button"
-        color="success"
-        [disabled]="partidaTerminada"
-        (click)="pedirCarta()">
-
-        PEDIR
-
-      </ion-button>
-
-
-      <ion-button
-        class="game-button"
-        color="warning"
-        [disabled]="partidaTerminada"
-        (click)="plantarse()">
-
-        PLANTARSE
-
-      </ion-button>
-
-
-      <ion-button
-        class="game-button"
-        color="warning"
-        [disabled]="partidaTerminada"
-        (click)="doblar()">
-
-        DOBLAR
-
-      </ion-button>
-
-
-      <ion-button
-        class="game-button split-button"
-        fill="outline"
-        [disabled]="partidaTerminada"
-        (click)="dividir()">
-
-        DIVIDIR
-
-      </ion-button>
-
-    </div>
-
-
-    <!-- ================================= -->
-    <!-- REGLAS -->
-    <!-- ================================= -->
-
-    <div class="bottom-rules">
-
-      <span>BLACKJACK 3:2</span>
-      <span>•</span>
-      <span>DEALER STANDS ON 17</span>
-      <span>•</span>
-      <span>MAX 21</span>
-
-    </div>
+          </div>
+        </div>
+      }
+    }
 
   </div>
 

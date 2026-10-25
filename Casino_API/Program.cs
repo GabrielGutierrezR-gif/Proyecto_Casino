@@ -1,12 +1,14 @@
 
 using Casino_AccesoDatos.Contexto;
 using Casino_AccesoDatos.Implementaciones;
+using Casino_API.Hubs;
 using Casino_API.Servicios;
 using Casino_Dominio.DTO;
 using Casino_Dominio.InterfacesAD;
 using Casino_Dominio.InterfacesLN;
 using Casino_LogicaNegocios.Implementaciones;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -26,19 +28,36 @@ builder.Services.AddScoped<ICompraLN, CompraLN>();
 builder.Services.AddScoped<IRuletaLN, RuletaLN>();
 builder.Services.AddScoped<ISalaLN, SalaLN>();
 builder.Services.AddScoped<IConfiguracionLN, ConfiguracionLN>();
+builder.Services.AddScoped<IPaProcedimientoAD, PaProcedimientoAD>();
+builder.Services.AddScoped<IHistorialLN, HistorialLN>();
+
+// Blackjack: las mesas viven en memoria, por eso la lógica y el notificador son SINGLETON
+builder.Services.AddSingleton<INotificadorBlackjack, NotificadorSignalR>();
+builder.Services.AddSingleton<IBlackjackLN, BlackjackLN>();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperProfile));
 builder.Services.AddSingleton<TokenService>();
+
+// SignalR: tiempo real del Blackjack. El "usuario" de cada conexión es el "sub" del token.
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, UsuarioIdProvider>();
 
 // ===== 3. CORS: permitir la conexión con Angular/Ionic =====
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy("FrontendCasino", policy =>
 	{
+		// 8100: ionic serve · 4200: ng serve · capacitor/localhost: app instalada en el teléfono
 		policy
-			.WithOrigins("http://localhost:8100")
+			.WithOrigins(
+				"http://localhost:8100",
+				"http://localhost:4200",
+				"http://localhost",
+				"https://localhost",
+				"capacitor://localhost")
 			.AllowAnyHeader()
-			.AllowAnyMethod();
+			.AllowAnyMethod()
+			.AllowCredentials();   // lo exige SignalR
 	});
 });
 
@@ -67,6 +86,24 @@ builder.Services
 
 			NameClaimType = "name",
 			RoleClaimType = "role"
+		};
+
+		// Los WebSockets no pueden mandar el header Authorization:
+		// SignalR envía el token en la URL (?access_token=...) y aquí se lee.
+		opciones.Events = new JwtBearerEvents
+		{
+			OnMessageReceived = contexto =>
+			{
+				var token = contexto.Request.Query["access_token"];
+
+				if (!string.IsNullOrEmpty(token) &&
+					contexto.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+				{
+					contexto.Token = token;
+				}
+
+				return Task.CompletedTask;
+			}
 		};
 	});
 
@@ -114,5 +151,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<BlackjackHub>("/hubs/blackjack");
+
+// Si la API se apagó a mitad de una ronda, se devuelven esas fichas a los jugadores
+await app.Services.GetRequiredService<IBlackjackLN>().CancelarRondasPendientesAsync();
 
 app.Run();

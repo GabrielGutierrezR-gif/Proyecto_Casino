@@ -30,16 +30,16 @@
       </div>
 
       <!-- CARGANDO -->
-      @if (cargando) {
+      @if (cargando()) {
         <div class="message">
           <p>Cargando tu información...</p>
         </div>
       }
 
       <!-- ERROR -->
-      @if (!cargando && mensaje) {
+      @if (!cargando() && mensaje()) {
         <div class="message error">
-          <p>{{ mensaje }}</p>
+          <p>{{ mensaje() }}</p>
 
           <ion-button
             color="warning"
@@ -51,17 +51,17 @@
       }
 
       <!-- PERFIL -->
-      @if (!cargando && usuario) {
+      @if (!cargando() && usuario(); as perfil) {
 
         <section class="profile-card">
 
           <!-- AVATAR -->
           <div class="avatar">♟</div>
 
-          <h3>{{ usuario.nombreUsuario }}</h3>
+          <h3>{{ perfil.nombreUsuario }}</h3>
 
           <span class="role">
-            {{ usuario.rol }}
+            {{ perfil.rol }}
           </span>
 
           <p class="profile-description">
@@ -69,9 +69,9 @@
           </p>
 
           <!-- MENSAJE DE ÉXITO -->
-          @if (mensajeExito) {
+          @if (mensajeExito()) {
             <div class="message success">
-              {{ mensajeExito }}
+              {{ mensajeExito() }}
             </div>
           }
 
@@ -95,9 +95,9 @@
               <ion-button
                 expand="block"
                 color="warning"
-                [disabled]="guardando"
+                [disabled]="guardando()"
                 (click)="guardarNombre()">
-                {{ guardando ? 'Guardando cambios...' : 'Guardar cambios' }}
+                {{ guardando() ? 'Guardando cambios...' : 'Guardar cambios' }}
               </ion-button>
             </div>
           </div>
@@ -113,7 +113,7 @@
                   <span class="data-icon">✉</span>
                   Correo electrónico
                 </span>
-                <strong>{{ usuario.correo }}</strong>
+                <strong>{{ perfil.correo }}</strong>
               </div>
 
               <div class="data-row">
@@ -121,7 +121,7 @@
                   <span class="data-icon">♟</span>
                   Tipo de cuenta
                 </span>
-                <strong>{{ usuario.rol }}</strong>
+                <strong>{{ perfil.rol }}</strong>
               </div>
 
               <div class="data-row">
@@ -130,7 +130,7 @@
                   Saldo de fichas
                 </span>
                 <strong class="gold">
-                  {{ usuario.saldoFichas }}
+                  {{ perfil.saldoFichas }}
                 </strong>
               </div>
 
@@ -140,11 +140,75 @@
                   Fecha de registro
                 </span>
                 <strong>
-                  {{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}
+                  {{ perfil.fechaRegistro | date:'dd/MM/yyyy' }}
                 </strong>
               </div>
 
             </div>
+          </div>
+
+          <!-- HISTORIAL -->
+          <div class="profile-section">
+            <h4>Mi historial</h4>
+            <p class="section-description">
+              Tus últimas partidas y compras de fichas.
+            </p>
+
+            <div class="history-tabs">
+              <button
+                type="button"
+                [class.selected]="pestanaHistorial() === 'juegos'"
+                (click)="pestanaHistorial.set('juegos')">
+                Partidas
+              </button>
+              <button
+                type="button"
+                [class.selected]="pestanaHistorial() === 'compras'"
+                (click)="pestanaHistorial.set('compras')">
+                Compras
+              </button>
+            </div>
+
+            @if (cargandoHistorial()) {
+              <p class="section-description">Cargando historial...</p>
+            } @else if (mensajeHistorial()) {
+              <p class="history-error">{{ mensajeHistorial() }}</p>
+            } @else if (pestanaHistorial() === 'juegos') {
+              <div class="history-list">
+                @for (juego of juegos(); track $index) {
+                  <div class="history-row">
+                    <div>
+                      <strong>{{ juego.juego }}</strong>
+                      <span>{{ juego.detalle }}</span>
+                      <small>{{ juego.resultadoJuego }} · {{ juego.fecha | date:'dd/MM/yyyy HH:mm' }}</small>
+                    </div>
+                    <span
+                      class="history-amount"
+                      [class.win]="juego.ganancia > 0"
+                      [class.loss]="juego.ganancia < 0">
+                      {{ juego.ganancia > 0 ? '+' : '' }}{{ juego.ganancia }}
+                    </span>
+                  </div>
+                } @empty {
+                  <p class="section-description">Todavía no has jugado.</p>
+                }
+              </div>
+            } @else {
+              <div class="history-list">
+                @for (compra of compras(); track compra.idCompra) {
+                  <div class="history-row">
+                    <div>
+                      <strong>{{ compra.paquete }}</strong>
+                      <span>{{ compra.tipoTarjeta }} **** {{ compra.ultimosDigitos }}</span>
+                      <small>{{ compra.fechaCompra | date:'dd/MM/yyyy HH:mm' }} · ${{ compra.precio | number:'1.2-2' }}</small>
+                    </div>
+                    <span class="history-amount win">+{{ compra.cantidadFichas }}</span>
+                  </div>
+                } @empty {
+                  <p class="section-description">Todavía no has comprado fichas.</p>
+                }
+              </div>
+            }
           </div>
 
           <!-- VOLVER AL CASINO -->
@@ -154,6 +218,14 @@
               color="warning"
               routerLink="/home">
               Volver al casino
+            </ion-button>
+
+            <ion-button
+              expand="block"
+              fill="outline"
+              color="danger"
+              (click)="cerrarSesion()">
+              Cerrar sesión
             </ion-button>
           </div>
 

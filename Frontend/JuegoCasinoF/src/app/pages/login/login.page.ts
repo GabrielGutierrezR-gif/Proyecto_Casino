@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -38,32 +38,32 @@ export class LoginPage {
   private router = inject(Router);
   private alertController = inject(AlertController);
 
-  correo = '';
-  password = '';
+  correo = signal('');
+  password = signal('');
 
-  mensaje = '';
-  esError = false;
-  cargando = false;
+  mensaje = signal('');
+  esError = signal(false);
+  cargando = signal(false);
 
 
 async iniciarSesion() {
-  this.mensaje = '';
+  this.mensaje.set('');
 
-  if (!this.correo.trim() || !this.password) {
-    this.mensaje = 'Ingresa tu correo y contraseña.';
-    this.esError = true;
+  if (!this.correo().trim() || !this.password()) {
+    this.mensaje.set('Ingresa tu correo y contraseña.');
+    this.esError.set(true);
     return;
   }
 
-  this.cargando = true;
+  this.cargando.set(true);
 
   this.authService.login({
-    correo: this.correo.trim(),
-    password: this.password
+    correo: this.correo().trim(),
+    password: this.password()
   }).subscribe({
     next: async (respuesta: RespuestaAPI<Sesion>) => {
       if (!respuesta.success || !respuesta.data) {
-        this.cargando = false;
+        this.cargando.set(false);
 
         const alerta = await this.alertController.create({
           header: 'Datos incorrectos',
@@ -75,23 +75,19 @@ async iniciarSesion() {
         return;
       }
 
-      sessionStorage.setItem('token', respuesta.data.token);
-      sessionStorage.setItem(
-        'usuario',
-        JSON.stringify(respuesta.data.usuario)
-      );
+      this.authService.iniciarSesion(respuesta.data);
 
-      this.correo = '';
-      this.password = '';
+      this.correo.set('');
+      this.password.set('');
 
-      this.esError = false;
-      this.cargando = false;
+      this.esError.set(false);
+      this.cargando.set(false);
 
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('/home', { replaceUrl: true });
     },
 
     error: async (error: any) => {
-      this.cargando = false;
+      this.cargando.set(false);
 
       if (error.status === 401) {
         const alerta = await this.alertController.create({

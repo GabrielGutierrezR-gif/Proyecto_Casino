@@ -1,0 +1,131 @@
+ion-content {
+  --background: #050505;
+}
+
+.admin-container {
+  min-height: 100%;
+  padding: 28px;
+  color: #fff;
+  background: #050505;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #292929;
+}
+
+.brand {
+  color: #f5c451;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.admin-header p {
+  margin: 5px 0 0;
+  color: #929292;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.admin-content {
+  width: 100%;
+  max-width: 720px;
+  margin: 45px auto;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #f5c451;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.admin-content h1 {
+  margin: 14px 0;
+  color: #f5c451;
+  font-size: clamp(28px, 5vw, 40px);
+}
+
+.description {
+  color: #aaa;
+}
+
+.config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 30px;
+  text-align: left;
+}
+
+.config-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 16px 18px;
+  background: #0d0d0d;
+  border: 1px solid #292929;
+  border-radius: 14px;
+}
+
+.config-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.config-info small {
+  color: #929292;
+}
+
+.config-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-edit ion-input {
+  width: 110px;
+}
+
+.row-message {
+  grid-column: 1 / -1;
+  color: #ff8a80;
+  font-size: 13px;
+}
+
+.row-message.success {
+  color: #9be7a0;
+}
+
+.error-message {
+  color: #ff8a80;
+}
+
+ion-button {
+  --border-radius: 10px;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .admin-container {
+    padding: 18px;
+  }
+
+  .admin-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .config-row {
+    grid-template-columns: 1fr;
+  }
+}

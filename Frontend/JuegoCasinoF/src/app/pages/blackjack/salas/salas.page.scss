@@ -239,6 +239,146 @@ ion-content {
 }
 
 
+
+/* =========================
+   MI SALA / CÓDIGO
+========================= */
+
+.my-room {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 20px;
+  padding: 18px 22px;
+
+  background: rgba(245, 196, 81, 0.08);
+
+  border: 1px solid rgba(245, 196, 81, 0.45);
+  border-radius: 16px;
+}
+
+.my-room strong {
+  color: #f5c451;
+}
+
+.my-room p {
+  margin: 4px 0 0;
+
+  color: #aaaaaa;
+  font-size: 13px;
+}
+
+.code-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 18px;
+}
+
+.code-form ion-input {
+  --color: #ffffff;
+
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.error-message {
+  margin: 16px 0 0;
+
+  color: #ff8a80;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.refresh-button {
+  width: 34px;
+  height: 34px;
+
+  color: #f5c451;
+  background: transparent;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+  border-radius: 50%;
+
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.loading-text {
+  color: #888888;
+  text-align: center;
+}
+
+
+/* =========================
+   TARJETA DE SALA
+========================= */
+
+.room-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 12px;
+  padding: 18px 22px;
+
+  background: rgba(10, 10, 10, 0.85);
+
+  border: 1px solid rgba(245, 196, 81, 0.2);
+  border-radius: 16px;
+}
+
+.room-info h4 {
+  margin: 0 0 6px;
+
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.room-info p {
+  margin: 0 0 8px;
+
+  color: #888888;
+  font-size: 13px;
+}
+
+.room-status {
+  padding: 3px 10px;
+
+  color: #9be7a0;
+
+  border: 1px solid rgba(155, 231, 160, 0.4);
+  border-radius: 20px;
+
+  font-size: 11px;
+}
+
+.room-status.playing {
+  color: #f5c451;
+
+  border-color: rgba(245, 196, 81, 0.4);
+}
+
+.room-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.room-side strong {
+  color: #f5c451;
+}
+
 /* =========================
    SIN SALAS
 ========================= */

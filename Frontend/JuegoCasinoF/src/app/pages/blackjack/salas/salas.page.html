@@ -6,8 +6,6 @@
     <header class="top-header">
 
       <div class="brand">
-
-
         <div>
           <h1>CASINO ROYAL</h1>
           <p>BLACKJACK</p>
@@ -15,7 +13,7 @@
       </div>
 
       <a routerLink="/home" class="back-link">
-         Volver al casino
+        ← Volver al casino
       </a>
 
     </header>
@@ -25,15 +23,26 @@
     <main class="salas-container">
 
       <div class="page-title">
-
-
         <h2>Salas de Blackjack</h2>
-
         <p>
           Elige una sala para comenzar a jugar
         </p>
-
       </div>
+
+
+      <!-- YA ESTOY EN UNA SALA -->
+      @if (miSala(); as mia) {
+        <section class="my-room">
+          <div>
+            <strong>Ya estás en la sala "{{ mia.nombreSala }}"</strong>
+            <p>Código {{ mia.codigoSala }} · {{ mia.cantidadJugadores }}/{{ mia.maxJugadores }} jugadores</p>
+          </div>
+
+          <ion-button color="warning" (click)="volverAMiSala()">
+            Volver a mi sala
+          </ion-button>
+        </section>
+      }
 
 
       <!-- ACCIONES -->
@@ -47,7 +56,6 @@
 
           <div class="action-info">
             <h3>Crear una sala</h3>
-
             <p>
               Crea una nueva sala de Blackjack
               e invita a otros jugadores.
@@ -55,11 +63,12 @@
           </div>
 
           <ion-button
-  color="warning"
-  class="action-button"
-  routerLink="/blackjack/crear-sala">
-  Crear sala
-</ion-button>
+            color="warning"
+            class="action-button"
+            [disabled]="!!miSala()"
+            routerLink="/blackjack/crear-sala">
+            Crear sala
+          </ion-button>
 
         </div>
 
@@ -75,7 +84,6 @@
 
           <div class="action-info">
             <h3>Unirse con código</h3>
-
             <p>
               ¿Tienes un código de sala?
               Únete directamente a ella.
@@ -85,13 +93,38 @@
           <ion-button
             fill="outline"
             color="warning"
-            class="action-button">
+            class="action-button"
+            (click)="mostrarCodigo.set(!mostrarCodigo())">
             Introducir código
           </ion-button>
 
         </div>
 
+        @if (mostrarCodigo()) {
+          <div class="code-form">
+            <ion-input
+              fill="outline"
+              placeholder="Ej. K7M2QX"
+              maxlength="6"
+              autocapitalize="characters"
+              [(ngModel)]="codigo"
+              (keyup.enter)="unirseConCodigo()">
+            </ion-input>
+
+            <ion-button
+              color="warning"
+              [disabled]="uniendose()"
+              (click)="unirseConCodigo()">
+              {{ uniendose() ? 'Entrando...' : 'Unirme' }}
+            </ion-button>
+          </div>
+        }
+
       </section>
+
+      @if (mensaje()) {
+        <p class="error-message">{{ mensaje() }}</p>
+      }
 
 
       <!-- SALAS DISPONIBLES -->
@@ -101,39 +134,84 @@
 
           <div>
             <h3>Salas disponibles</h3>
-
             <p>
               Elige una sala pública para jugar
             </p>
           </div>
 
-          <span class="room-count">
-            0 salas
-          </span>
+          <div class="header-right">
+            <span class="room-count">
+              {{ salas().length }} {{ salas().length === 1 ? 'sala' : 'salas' }}
+            </span>
+
+            <button
+              type="button"
+              class="refresh-button"
+              aria-label="Actualizar salas"
+              (click)="cargarSalas()">
+              ⟳
+            </button>
+          </div>
 
         </div>
 
+        @if (cargando()) {
+          <p class="loading-text">Cargando salas...</p>
+        } @else {
 
-        <!-- POR AHORA NO HAY SALAS -->
-        <div class="empty-rooms">
+          @for (sala of salas(); track sala.idSala) {
+            <div class="room-card">
+              <div class="room-info">
+                <h4>{{ sala.nombreSala }}</h4>
+                <p>
+                  {{ sala.jugadores.join(', ') || 'Sin jugadores' }}
+                </p>
+                <span
+                  class="room-status"
+                  [class.playing]="sala.estado === 'Jugando'">
+                  {{ sala.estado === 'Jugando' ? 'En juego' : 'Esperando' }}
+                </span>
+              </div>
 
+              <div class="room-side">
+                <strong>{{ sala.cantidadJugadores }}/{{ sala.maxJugadores }}</strong>
 
+                @if (miSala()?.idSala === sala.idSala) {
+                  <ion-button size="small" color="warning" (click)="volverAMiSala()">
+                    Entrar
+                  </ion-button>
+                } @else {
+                  <ion-button
+                    size="small"
+                    color="warning"
+                    [disabled]="uniendose() || !!miSala() || sala.cantidadJugadores >= sala.maxJugadores"
+                    (click)="unirse(sala.codigoSala)">
+                    {{ sala.cantidadJugadores >= sala.maxJugadores ? 'Llena' : 'Unirme' }}
+                  </ion-button>
+                }
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-rooms">
 
-          <h3>No hay salas disponibles</h3>
+              <h3>No hay salas disponibles</h3>
 
-          <p>
-            Actualmente no hay salas públicas
-            esperando jugadores.
-          </p>
+              <p>
+                Actualmente no hay salas públicas
+                esperando jugadores.
+              </p>
 
-          <ion-button
-  color="warning"
-  class="create-first-button"
-  routerLink="/blackjack/crear-sala">
-  Crear la primera sala
-</ion-button>
+              <ion-button
+                color="warning"
+                class="create-first-button"
+                [disabled]="!!miSala()"
+                routerLink="/blackjack/crear-sala">
+                Crear la primera sala
+              </ion-button>
 
-        </div>
+            </div>
+          }
+        }
 
       </section>
 

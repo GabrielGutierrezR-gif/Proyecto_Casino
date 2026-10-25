@@ -53,9 +53,9 @@
         </ion-item>
 
         <!-- Mensaje de respuesta -->
-        @if (mensaje) {
-          <p [style.color]="esError ? '#ff7070' : '#f5c451'">
-            {{ mensaje }}
+        @if (mensaje()) {
+          <p [style.color]="esError() ? '#ff7070' : '#f5c451'">
+            {{ mensaje() }}
           </p>
         }
 
@@ -64,9 +64,9 @@
           expand="block"
           type="submit"
           class="login-button"
-          [disabled]="cargando">
+          [disabled]="cargando()">
 
-          {{ cargando ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+          {{ cargando() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
 
         </ion-button>
 

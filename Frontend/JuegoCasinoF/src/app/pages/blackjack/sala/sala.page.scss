@@ -133,6 +133,9 @@ ion-content {
 .room-code {
   min-width: 180px;
 
+  cursor: pointer;
+  font-family: inherit;
+
   padding: 17px;
 
   text-align: center;
@@ -505,6 +508,18 @@ ion-content {
   color: #899889;
 
   font-size: 12px;
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.error-message {
+  margin: 18px 0 0;
+
+  color: #ff8a80;
+  text-align: center;
 }
 
 

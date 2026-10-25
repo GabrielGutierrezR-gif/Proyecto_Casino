@@ -11,9 +11,7 @@ ion-content {
   position: relative;
 
   width: 100%;
-  min-height: 100vh;
-
-  overflow: hidden;
+  min-height: 100%;
 
   background-image:
     linear-gradient(
@@ -25,6 +23,7 @@ ion-content {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 
   color: white;
 
@@ -37,70 +36,195 @@ ion-content {
 ========================================= */
 
 .top-bar {
-  position: absolute;
-
+  position: sticky;
   top: 0;
-  left: 0;
-
-  width: 100%;
-
-  height: 70px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
+  gap: 12px;
 
+  min-height: 70px;
   padding: 0 25px;
 
-  background: rgba(0, 0, 0, 0.55);
-
+  background: rgba(0, 0, 0, 0.6);
   border-bottom: 1px solid rgba(245, 196, 81, 0.35);
 
   z-index: 20;
 }
 
-
 .casino-title {
   color: #f5c451;
-
   font-size: 20px;
-
   font-weight: 800;
-
   letter-spacing: 2px;
 }
 
-
 .crown {
   font-size: 25px;
-
   margin-right: 8px;
 }
 
-
 .game-title {
-  position: absolute;
-
-  left: 50%;
-
-  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   color: #f5c451;
-
   font-size: 26px;
-
   font-weight: 900;
-
   letter-spacing: 4px;
 }
 
+.game-title small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+.top-actions {
+  display: flex;
+}
 
 .exit-button {
   --color: #ffffff;
+  font-size: 13px;
+}
+
+
+/* =========================================
+   ESTADOS GENERALES
+========================================= */
+
+.center-panel {
+  max-width: 420px;
+  margin: 120px auto;
+  padding: 30px;
+
+  text-align: center;
+
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(245, 196, 81, 0.35);
+  border-radius: 15px;
+}
+
+.connection-banner {
+  padding: 8px;
+
+  color: #050505;
+  background: #f5c451;
 
   font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.table-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 20px 30px;
+}
+
+
+/* =========================================
+   CARTAS
+========================================= */
+
+.section-title {
+  display: inline-block;
+
+  margin-bottom: 8px;
+  padding: 3px 14px;
+
+  color: #f5c451;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 8px;
+
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.cards-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  min-height: 90px;
+}
+
+.playing-card {
+  width: 82px;
+  height: auto;
+
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.65));
+
+  animation: repartir 0.3s ease-out;
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.playing-card:hover {
+  transform: translateY(-5px);
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.8));
+}
+
+.empty-card {
+  opacity: 0.35;
+}
+
+@keyframes repartir {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) rotate(-8deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hand-value {
+  margin-top: 5px;
+
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.hand-state {
+  margin-left: 8px;
+  padding: 2px 8px;
+
+  color: #050505;
+  background: #f5c451;
+  border-radius: 6px;
+
+  font-size: 11px;
+}
+
+.waiting-cards {
+  padding: 4px 12px;
+
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-style: italic;
 }
 
 
@@ -109,80 +233,7 @@ ion-content {
 ========================================= */
 
 .dealer-area {
-
-  position: absolute;
-
-  top: 82px;
-
-  left: 50%;
-
-  transform: translateX(-50%);
-
   text-align: center;
-
-  width: 400px;
-}
-
-
-.section-title {
-
-  color: #f5c451;
-
-  font-size: 16px;
-
-  font-weight: 800;
-
-  letter-spacing: 2px;
-
-  margin-bottom: 8px;
-}
-
-
-.dealer-cards {
-
-  display: flex;
-
-  justify-content: center;
-
-  align-items: center;
-
-  gap: 8px;
-}
-
-
-.playing-card {
-
-  width: 82px;
-
-  height: auto;
-
-  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.65));
-
-  transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
-}
-
-
-.playing-card:hover {
-
-  transform: translateY(-5px);
-
-  filter: drop-shadow(
-    0 8px 8px rgba(0, 0, 0, 0.8)
-  );
-}
-
-
-.dealer-value {
-
-  margin-top: 5px;
-
-  color: #ffffff;
-
-  font-size: 15px;
-
-  font-weight: bold;
 }
 
 
@@ -191,94 +242,151 @@ ion-content {
 ========================================= */
 
 .game-message {
-
-  position: absolute;
-
-  top: 43%;
-
-  left: 50%;
-
-  transform: translate(-50%, -50%);
+  min-width: 280px;
+  max-width: 100%;
+  padding: 10px 20px;
 
   text-align: center;
 
-  min-width: 260px;
-
-  padding: 10px 20px;
-
-  border-radius: 15px;
-
-  background: rgba(0, 0, 0, 0.32);
-
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(245, 196, 81, 0.25);
+  border-radius: 15px;
 
   backdrop-filter: blur(3px);
 }
 
-
 .turn-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
   color: #f5c451;
-
   font-size: 20px;
-
   font-weight: 900;
-
   letter-spacing: 1px;
 }
 
+.turn-indicator.my-turn {
+  color: #9be7a0;
+}
+
+.timer {
+  padding: 2px 8px;
+
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+
+  font-size: 14px;
+}
+
+.timer.urgent {
+  background: #c62828;
+}
 
 .message-text {
-
   margin-top: 4px;
 
   color: #ffffff;
-
   font-size: 13px;
+}
+
+.warning-text {
+  color: #ffb74d;
 }
 
 
 /* =========================================
-   JUGADOR
+   OTROS JUGADORES
 ========================================= */
 
-.player-area {
+.others-area {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
-  position: absolute;
-
-  bottom: 105px;
-
-  left: 50%;
-
-  transform: translateX(-50%);
+.other-player {
+  min-width: 170px;
+  padding: 10px 12px;
 
   text-align: center;
 
-  width: 500px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
 }
 
+.other-player.active {
+  border-color: #f5c451;
+  box-shadow: 0 0 12px rgba(245, 196, 81, 0.45);
+}
 
-.player-cards {
+.other-player.offline {
+  opacity: 0.55;
+}
 
+.other-name {
+  margin-bottom: 6px;
+
+  color: #f5c451;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.other-name small {
+  color: #aaaaaa;
+  font-weight: normal;
+}
+
+.mini-cards {
   display: flex;
-
   justify-content: center;
+  gap: 4px;
+}
 
-  align-items: center;
+.mini-card {
+  width: 38px;
+  height: auto;
 
-  gap: 8px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));
+}
+
+.other-info {
+  margin-top: 4px;
+
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
 }
 
 
-.player-value {
+/* =========================================
+   MIS MANOS
+========================================= */
 
-  margin-top: 5px;
+.player-area {
+  text-align: center;
+}
 
-  color: #ffffff;
+.my-hands {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
 
-  font-size: 16px;
+.my-hand {
+  padding: 8px 10px;
 
-  font-weight: bold;
+  border: 2px solid transparent;
+  border-radius: 14px;
+}
+
+.my-hand.active {
+  border-color: #f5c451;
+  background: rgba(245, 196, 81, 0.08);
 }
 
 
@@ -287,173 +395,52 @@ ion-content {
 ========================================= */
 
 .player-info {
-
-  position: absolute;
-
-  left: 25px;
-
-  bottom: 25px;
-
   display: flex;
-
   gap: 12px;
 }
 
-
 .info-box {
-
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
 
   min-width: 125px;
-
   padding: 8px 14px;
 
-  border-radius: 10px;
-
   background: rgba(0, 0, 0, 0.75);
-
   border: 1px solid rgba(245, 196, 81, 0.55);
+  border-radius: 10px;
 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-
 .info-label {
-
   color: #aaaaaa;
-
   font-size: 10px;
-
   letter-spacing: 1px;
 }
 
-
 .info-value {
-
   margin-top: 2px;
 
   color: #f5c451;
-
   font-size: 17px;
-
   font-weight: 900;
 }
 
 
 /* =========================================
-   BOTONES
+   FICHAS
 ========================================= */
 
-.action-area {
-
-  position: absolute;
-
-  right: 25px;
-
-  bottom: 25px;
-
-  display: flex;
-
-  gap: 8px;
-
-  align-items: center;
-}
-
-
-.game-button {
-
-  --border-radius: 9px;
-
-  height: 43px;
-
-  min-width: 105px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.5px;
-}
-
-
-.split-button {
-
-  --color: #f5c451;
-
-  --border-color: #f5c451;
-
-  min-width: 90px;
-}
-
-
-/* =========================================
-   REGLAS
-========================================= */
-
-.bottom-rules {
-
-  position: absolute;
-
-  bottom: 8px;
-
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  display: flex;
-
-  gap: 8px;
-
-  align-items: center;
-
-  color: rgba(255, 255, 255, 0.7);
-
-  font-size: 9px;
-
-  letter-spacing: 1px;
-
-  white-space: nowrap;
-}
-
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-
-@media (max-width: 900px) {
-
-  .playing-card {
-    width: 65px;
-  }
-
-  .dealer-area {
-    top: 75px;
-  }
-
-  .player-area {
-    bottom: 90px;
-  }
-
-  .game-button {
-    min-width: 85px;
-    font-size: 11px;
-  }
-
-  .info-box {
-    min-width: 100px;
-  }
-  .chips-area {
-  position: absolute;
-  right: 25px;
-  bottom: 82px;
-
+.chips-area {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 
-  padding: 8px 12px;
+  padding: 10px 14px;
 
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(245, 196, 81, 0.35);
@@ -465,13 +452,12 @@ ion-content {
 .chip-button {
   position: relative;
 
-  width: 52px;
-  height: 52px;
-
+  width: 56px;
+  height: 56px;
   padding: 0;
 
-  border: none;
   background: transparent;
+  border: none;
 
   cursor: pointer;
 
@@ -490,9 +476,10 @@ ion-content {
 }
 
 .chip-image {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
 
+  border-radius: 50%;
   object-fit: contain;
 
   filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.7));
@@ -500,20 +487,191 @@ ion-content {
 
 .chip-value {
   position: absolute;
-
   left: 50%;
   bottom: -4px;
-
   transform: translateX(-50%);
 
   padding: 2px 5px;
 
+  color: #ffffff;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 5px;
 
-  color: #ffffff;
-
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
 }
+
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.action-area {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.game-button {
+  --border-radius: 9px;
+
+  height: 43px;
+  min-width: 105px;
+
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.split-button {
+  --color: #f5c451;
+  --border-color: #f5c451;
+
+  min-width: 90px;
+}
+
+
+/* =========================================
+   REGLAS
+========================================= */
+
+.bottom-rules {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+
+/* =========================================
+   RESULTADO DE LA RONDA
+========================================= */
+
+.result-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.6);
+
+  z-index: 50;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 26px;
+
+  text-align: center;
+
+  background: #0b120d;
+  border: 1px solid #f5c451;
+  border-radius: 18px;
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.result-card h2 {
+  margin: 0 0 14px;
+
+  color: #f5c451;
+  letter-spacing: 2px;
+}
+
+.result-dealer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 16px;
+
+  color: #cccccc;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 8px;
+  padding: 10px 14px;
+
+  color: #cccccc;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+
+  font-size: 13px;
+}
+
+.result-row.mine {
+  flex-direction: column;
+  align-items: center;
+
+  font-size: 15px;
+}
+
+.result-row.mine strong {
+  font-size: 22px;
+}
+
+.result-row.win strong {
+  color: #9be7a0;
+}
+
+.result-row.loss strong {
+  color: #ff8a80;
+}
+
+.result-card ion-button {
+  margin-top: 12px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+  .top-bar {
+    padding: 0 10px;
+  }
+
+  .casino-name {
+    display: none;
+  }
+
+  .game-title {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+
+  .playing-card {
+    width: 62px;
+  }
+
+  .game-button {
+    min-width: 80px;
+    font-size: 11px;
+  }
+
+  .info-box {
+    min-width: 100px;
+  }
+
+  .chip-button,
+  .chip-image {
+    width: 46px;
+    height: 46px;
+  }
 }

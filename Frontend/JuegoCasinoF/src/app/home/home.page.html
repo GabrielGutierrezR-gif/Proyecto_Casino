@@ -26,13 +26,7 @@
 
           <div>
             <span class="balance-label">FICHAS</span>
-            <strong>
-  @if (cargando) {
-    Cargando...
-  } @else {
-    {{ usuario?.saldoFichas ?? 0 }}
-  }
-</strong>
+            <strong>{{ usuario()?.saldoFichas ?? 0 }}</strong>
           </div>
 
         </div>
@@ -50,25 +44,38 @@
   <div class="profile-info">
     <span>BIENVENIDO</span>
 
-    <strong>
-      @if (cargando) {
-        Cargando...
-      } @else {
-        {{ usuario?.nombreUsuario ?? 'Usuario' }}
-      }
-    </strong>
+    <strong>{{ usuario()?.nombreUsuario ?? 'Usuario' }}</strong>
   </div>
 </div>
 
 
 
 
+        @if (esAdmin()) {
+          <button
+            class="settings-button"
+            routerLink="/admin"
+            title="Administración"
+            aria-label="Abrir el panel de administración">
+            🛠️
+          </button>
+        }
+
         <button
-  class="settings-button"
-  routerLink="/profile"
-  aria-label="Abrir mi perfil">
-  ⚙️
-</button>
+          class="settings-button"
+          routerLink="/profile"
+          title="Mi perfil"
+          aria-label="Abrir mi perfil">
+          ⚙️
+        </button>
+
+        <button
+          class="settings-button"
+          (click)="cerrarSesion()"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión">
+          ⏻
+        </button>
 
 
       </div>
@@ -91,8 +98,12 @@
         </h2>
 
         <p class="welcome-text">
-          Elige tu juego y disfrutar la experiencia.
+          Elige tu juego y disfruta la experiencia.
         </p>
+
+        @if (mensaje) {
+          <p class="welcome-text error-text">{{ mensaje }}</p>
+        }
 
       </div>
 
@@ -161,11 +172,9 @@
           </div>
 
           <ion-button
-            class="game-button"
-            fill="solid">
-
+            color="warning"
+            routerLink="/ruleta">
             Jugar
-
           </ion-button>
 
         </div>

@@ -1,0 +1,66 @@
+<ion-content [fullscreen]="true">
+  <main class="admin-container">
+
+    <header class="admin-header">
+      <div>
+        <span class="brand">CASINO ROYAL</span>
+        <p>ADMINISTRACIÓN</p>
+      </div>
+
+      <ion-button
+        fill="outline"
+        color="warning"
+        routerLink="/home">
+        Volver al casino
+      </ion-button>
+    </header>
+
+    <section class="admin-content">
+      <span class="eyebrow">CONFIGURACIÓN GLOBAL</span>
+      <h1>Parámetros del casino</h1>
+      <p class="description">
+        Los cambios se aplican de inmediato, sin reiniciar el servidor.
+      </p>
+
+      @if (cargando()) {
+        <p class="description">Cargando configuración...</p>
+      } @else if (mensaje()) {
+        <p class="error-message">{{ mensaje() }}</p>
+        <ion-button color="warning" fill="outline" (click)="cargar()">Reintentar</ion-button>
+      } @else {
+        <div class="config-list">
+          @for (fila of filas(); track fila.clave) {
+            <div class="config-row">
+              <div class="config-info">
+                <strong>{{ etiqueta(fila.clave) }}</strong>
+                <small>{{ fila.descripcion }}</small>
+              </div>
+
+              <div class="config-edit">
+                <ion-input
+                  type="number"
+                  fill="outline"
+                  min="1"
+                  [(ngModel)]="fila.nuevoValor"
+                  (keyup.enter)="guardar(fila)">
+                </ion-input>
+
+                <ion-button
+                  color="warning"
+                  [disabled]="fila.guardando || fila.nuevoValor == fila.valor"
+                  (click)="guardar(fila)">
+                  {{ fila.guardando ? '...' : 'Guardar' }}
+                </ion-button>
+              </div>
+
+              @if (fila.mensaje) {
+                <span class="row-message" [class.success]="fila.exito">{{ fila.mensaje }}</span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+  </main>
+</ion-content>

@@ -1,4 +1,4 @@
-
+﻿
 using Casino_AccesoDatos.Contexto;
 using Casino_AccesoDatos.Implementaciones;
 using Casino_API.Hubs;
@@ -30,6 +30,10 @@ builder.Services.AddScoped<ISalaLN, SalaLN>();
 builder.Services.AddScoped<IConfiguracionLN, ConfiguracionLN>();
 builder.Services.AddScoped<IPaProcedimientoAD, PaProcedimientoAD>();
 builder.Services.AddScoped<IHistorialLN, HistorialLN>();
+
+// Verificación de correo al crear la cuenta: los códigos viven en memoria
+builder.Services.AddSingleton<IVerificacionCorreoLN, VerificacionCorreoLN>();
+builder.Services.AddSingleton<IEnvioCorreo, EmailService>();
 
 // Blackjack: las mesas viven en memoria, por eso la lógica y el notificador son SINGLETON
 builder.Services.AddSingleton<INotificadorBlackjack, NotificadorSignalR>();

@@ -22,7 +22,17 @@ namespace Casino_API.Controllers
             _tokenService = tokenService;
         }
 
+        // POST api/auth/enviar-codigo
+        // Paso 1 del registro: valida los datos y manda un código de 6 dígitos al correo
+        [HttpPost("enviar-codigo")]
+        public async Task<IActionResult> EnviarCodigo([FromBody] clsRegistro datos)
+        {
+            var respuesta = await _usuarioLN.EnviarCodigoRegistroAsync(datos);
+            return respuesta.Success ? Ok(respuesta) : BadRequest(respuesta);
+        }
+
         // POST api/auth/registro   (RG1 + RG2)
+        // Paso 2: con el código del correo se crea la cuenta
         // Crea la cuenta, le da las fichas de bienvenida y devuelve el token
         [HttpPost("registro")]
         public async Task<IActionResult> Registro([FromBody] clsRegistro datos)
@@ -48,18 +58,22 @@ namespace Casino_API.Controllers
             if (!respuesta.Success || respuesta.Data == null)
                 return Unauthorized(respuesta);
 
-            // 200: login correcto
-            return Ok(CrearSesion(respuesta.Data));
+            // 200: login correcto. La primera vez la app muestra la bienvenida y el regalo de fichas
+            bool primerIngreso = await _usuarioLN.MarcarBienvenidaAsync(respuesta.Data.IdUsuario);
+            return Ok(CrearSesion(respuesta.Data, primerIngreso));
         }
 
         // Arma la respuesta con el token JWT + los datos del perfil.
         // La app guarda el token y lo envía en las siguientes peticiones (RNF6).
-        private Respuesta<clsSesion> CrearSesion(clsPerfilUsuario usuario)
+        private Respuesta<clsSesion> CrearSesion(clsPerfilUsuario usuario, bool primerIngreso = false)
         {
             return Respuesta<clsSesion>.Ok(new clsSesion
             {
                 Token = _tokenService.GenerarToken(usuario),
-                Usuario = usuario
+                Usuario = usuario,
+                PrimerIngreso = primerIngreso,
+                // En el primer ingreso el saldo es justo el regalo de bienvenida
+                FichasBienvenida = primerIngreso ? (int)usuario.SaldoFichas : 0
             });
         }
     }

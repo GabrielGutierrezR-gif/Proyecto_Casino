@@ -1,0 +1,144 @@
+<ion-content [fullscreen]="true">
+
+  <div class="salas-page">
+
+    <!-- ENCABEZADO -->
+    <header class="top-header">
+
+      <div class="brand">
+
+
+        <div>
+          <h1>CASINO ROYAL</h1>
+          <p>BLACKJACK</p>
+        </div>
+      </div>
+
+      <a routerLink="/home" class="back-link">
+         Volver al casino
+      </a>
+
+    </header>
+
+
+    <!-- CONTENIDO -->
+    <main class="salas-container">
+
+      <div class="page-title">
+
+
+        <h2>Salas de Blackjack</h2>
+
+        <p>
+          Elige una sala para comenzar a jugar
+        </p>
+
+      </div>
+
+
+      <!-- ACCIONES -->
+      <section class="actions-card">
+
+        <div class="action">
+
+          <div class="action-icon">
+            +
+          </div>
+
+          <div class="action-info">
+            <h3>Crear una sala</h3>
+
+            <p>
+              Crea una nueva sala de Blackjack
+              e invita a otros jugadores.
+            </p>
+          </div>
+
+          <ion-button
+  color="warning"
+  class="action-button"
+  routerLink="/blackjack/crear-sala">
+  Crear sala
+</ion-button>
+
+        </div>
+
+
+        <div class="divider"></div>
+
+
+        <div class="action">
+
+          <div class="action-icon">
+            #
+          </div>
+
+          <div class="action-info">
+            <h3>Unirse con código</h3>
+
+            <p>
+              ¿Tienes un código de sala?
+              Únete directamente a ella.
+            </p>
+          </div>
+
+          <ion-button
+            fill="outline"
+            color="warning"
+            class="action-button">
+            Introducir código
+          </ion-button>
+
+        </div>
+
+      </section>
+
+
+      <!-- SALAS DISPONIBLES -->
+      <section class="available-section">
+
+        <div class="section-header">
+
+          <div>
+            <h3>Salas disponibles</h3>
+
+            <p>
+              Elige una sala pública para jugar
+            </p>
+          </div>
+
+          <span class="room-count">
+            0 salas
+          </span>
+
+        </div>
+
+
+        <!-- POR AHORA NO HAY SALAS -->
+        <div class="empty-rooms">
+
+
+
+          <h3>No hay salas disponibles</h3>
+
+          <p>
+            Actualmente no hay salas públicas
+            esperando jugadores.
+          </p>
+
+          <ion-button
+  color="warning"
+  class="create-first-button"
+  routerLink="/blackjack/crear-sala">
+  Crear la primera sala
+</ion-button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</ion-content>

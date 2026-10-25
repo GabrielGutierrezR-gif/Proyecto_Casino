@@ -1,188 +1,165 @@
-<ion-content [fullscreen]="true">
 
+<ion-content [fullscreen]="true">
   <div class="profile-container">
 
-    <!-- ============================== -->
     <!-- ENCABEZADO -->
-    <!-- ============================== -->
-
     <header class="profile-header">
-
-      <div class="casino-logo">
-        <span class="logo-symbol">♠</span>
+      <div class="brand">
 
         <div>
-          <h1>CASINO</h1>
-          <span class="logo-subtitle">ROYAL</span>
+          <h1>CASINO ROYAL</h1>
+          <span>MI CUENTA</span>
         </div>
       </div>
 
-      <span class="page-title">
-        PERFIL DE USUARIO
-      </span>
-
+      <ion-button
+        fill="outline"
+        color="warning"
+        routerLink="/home">
+        Volver al inicio
+      </ion-button>
     </header>
 
+    <main class="profile-main">
 
-    <!-- ============================== -->
-    <!-- PERFIL -->
-    <!-- ============================== -->
+      <!-- TÍTULO -->
+      <div class="page-title">
+        <span>ROYAL CLUB</span>
+        <h2>Mi perfil</h2>
+        <p>Administra tu información personal y tu cuenta del casino.</p>
+      </div>
 
-    <main class="profile-content">
-
-      <section class="profile-card">
-
-        <div class="profile-avatar">
-          ♟
+      <!-- CARGANDO -->
+      @if (cargando) {
+        <div class="message">
+          <p>Cargando tu información...</p>
         </div>
+      }
 
-        <h2>Jugador</h2>
+      <!-- ERROR -->
+      @if (!cargando && mensaje) {
+        <div class="message error">
+          <p>{{ mensaje }}</p>
 
-        <p class="username">
-          Usuario del casino
-        </p>
-
-        <div class="profile-line"></div>
-
-        <p class="member-text">
-          Miembro de Casino Royal
-        </p>
-
-      </section>
-
-
-      <!-- ============================== -->
-      <!-- ESTADÍSTICAS -->
-      <!-- ============================== -->
-
-      <section class="stats-container">
-
-        <div class="stat-card">
-
-          <span class="stat-icon">
-            🪙
-          </span>
-
-          <strong>
-            500
-          </strong>
-
-          <span class="stat-label">
-            FICHAS
-          </span>
-
+          <ion-button
+            color="warning"
+            fill="outline"
+            (click)="cargarPerfil()">
+            Reintentar
+          </ion-button>
         </div>
+      }
 
+      <!-- PERFIL -->
+      @if (!cargando && usuario) {
 
-        <div class="stat-card">
+        <section class="profile-card">
 
-          <span class="stat-icon">
-            🏆
+          <!-- AVATAR -->
+          <div class="avatar">♟</div>
+
+          <h3>{{ usuario.nombreUsuario }}</h3>
+
+          <span class="role">
+            {{ usuario.rol }}
           </span>
 
-          <strong>
-            0
-          </strong>
+          <p class="profile-description">
+            Miembro de Royal Club
+          </p>
 
-          <span class="stat-label">
-            VICTORIAS
-          </span>
+          <!-- MENSAJE DE ÉXITO -->
+          @if (mensajeExito) {
+            <div class="message success">
+              {{ mensajeExito }}
+            </div>
+          }
 
-        </div>
+          <!-- CAMBIAR NOMBRE -->
+          <div class="profile-section">
+            <h4>Información personal</h4>
+            <p class="section-description">
+              Puedes actualizar tu nombre de usuario cuando lo necesites.
+            </p>
 
+            <div class="edit-name">
+              <ion-input
+                label="Nombre de usuario"
+                labelPlacement="stacked"
+                fill="outline"
+                [(ngModel)]="nuevoNombre"
+                maxlength="50"
+                placeholder="Escribe tu nuevo nombre">
+              </ion-input>
 
-        <div class="stat-card">
+              <ion-button
+                expand="block"
+                color="warning"
+                [disabled]="guardando"
+                (click)="guardarNombre()">
+                {{ guardando ? 'Guardando cambios...' : 'Guardar cambios' }}
+              </ion-button>
+            </div>
+          </div>
 
-          <span class="stat-icon">
-            🎰
-          </span>
+          <!-- DATOS DE LA CUENTA -->
+          <div class="profile-section">
+            <h4>Datos de mi cuenta</h4>
 
-          <strong>
-            0
-          </strong>
+            <div class="profile-data">
 
-          <span class="stat-label">
-            PARTIDAS
-          </span>
+              <div class="data-row">
+                <span>
+                  <span class="data-icon">✉</span>
+                  Correo electrónico
+                </span>
+                <strong>{{ usuario.correo }}</strong>
+              </div>
 
-        </div>
+              <div class="data-row">
+                <span>
+                  <span class="data-icon">♟</span>
+                  Tipo de cuenta
+                </span>
+                <strong>{{ usuario.rol }}</strong>
+              </div>
 
-      </section>
+              <div class="data-row">
+                <span>
+                  <span class="data-icon">◆</span>
+                  Saldo de fichas
+                </span>
+                <strong class="gold">
+                  {{ usuario.saldoFichas }}
+                </strong>
+              </div>
 
+              <div class="data-row">
+                <span>
+                  <span class="data-icon">▦</span>
+                  Fecha de registro
+                </span>
+                <strong>
+                  {{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}
+                </strong>
+              </div>
 
-      <!-- ============================== -->
-      <!-- OPCIONES -->
-      <!-- ============================== -->
+            </div>
+          </div>
 
-      <section class="options-card">
+          <!-- VOLVER AL CASINO -->
+          <div class="profile-actions">
+            <ion-button
+              expand="block"
+              color="warning"
+              routerLink="/home">
+              Volver al casino
+            </ion-button>
+          </div>
 
-        <button class="profile-option">
-
-          <span class="option-icon">
-            ⚙
-          </span>
-
-          <span class="option-text">
-            Configuración de cuenta
-          </span>
-
-          <span class="arrow">
-            ›
-          </span>
-
-        </button>
-
-
-        <button class="profile-option">
-
-          <span class="option-icon">
-            🏆
-          </span>
-
-          <span class="option-text">
-            Historial de partidas
-          </span>
-
-          <span class="arrow">
-            ›
-          </span>
-
-        </button>
-
-
-        <button class="profile-option logout">
-
-          <span class="option-icon">
-            🚪
-          </span>
-
-          <span class="option-text">
-            Cerrar sesión
-          </span>
-
-          <span class="arrow">
-            ›
-          </span>
-
-        </button>
-
-      </section>
+        </section>
+      }
 
     </main>
-
-
-    <!-- ============================== -->
-    <!-- PIE -->
-    <!-- ============================== -->
-
-    <footer class="profile-footer">
-
-      <span>
-        Juega responsablemente
-      </span>
-
-    </footer>
-
   </div>
-
 </ion-content>

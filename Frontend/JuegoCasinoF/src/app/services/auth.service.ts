@@ -1,9 +1,9 @@
-
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 const API_URL = 'https://localhost:7187/api/Auth';
+const USUARIOS_URL = 'https://localhost:7187/api/Usuarios';
 
 export interface Usuario {
   idUsuario: number;
@@ -14,13 +14,11 @@ export interface Usuario {
   rol: string;
 }
 
-// 4define los datos que devuelve el backend con el token
 export interface Sesion {
   token: string;
   usuario: Usuario;
 }
 
-//permite leer la respuesta real del servidor
 export interface RespuestaAPI<T> {
   success: boolean;
   data: T | null;
@@ -34,26 +32,57 @@ export class AuthService {
 
   private http = inject(HttpClient);
 
-  //envia el correo y la contraseña al api
+  // LOGIN
   login(datos: {
     correo: string;
     password: string;
   }): Observable<RespuestaAPI<Sesion>> {
+
     return this.http.post<RespuestaAPI<Sesion>>(
       `${API_URL}/login`,
       datos
     );
   }
 
-  //envia el nombre de usuario, correo y contraseña al api para registrar un nuevo usuario
+  // REGISTRO
   registro(datos: {
     nombreUsuario: string;
     correo: string;
     password: string;
   }): Observable<RespuestaAPI<Sesion>> {
+
     return this.http.post<RespuestaAPI<Sesion>>(
       `${API_URL}/registro`,
       datos
+    );
+  }
+
+  // OBTENER PERFIL DEL USUARIO LOGUEADO
+  obtenerPerfil(): Observable<RespuestaAPI<Usuario>> {
+
+    const token = sessionStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get<RespuestaAPI<Usuario>>(
+      `${USUARIOS_URL}/perfil`,
+      { headers }
+    );
+  }
+
+  actualizarNombreUsuario(nuevoNombre: string): Observable<RespuestaAPI<Usuario>> {
+    const token = sessionStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.put<RespuestaAPI<Usuario>>(
+      'https://localhost:7187/api/Usuarios/nombre',
+      { nuevoNombre },
+      { headers }
     );
   }
 }

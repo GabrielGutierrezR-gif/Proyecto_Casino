@@ -1,0 +1,322 @@
+ion-content {
+  --background: #050505;
+}
+
+.salas-page {
+  min-height: 100%;
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(40, 70, 45, 0.35),
+      transparent 45%
+    ),
+    #050505;
+
+  color: #ffffff;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.top-header {
+  width: 100%;
+  padding: 22px 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(245, 196, 81, 0.2);
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: #f5c451;
+  font-size: 38px;
+}
+
+.brand h1 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.brand p {
+  margin: 3px 0 0;
+
+  color: #8f8f8f;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.back-link {
+  color: #aaaaaa;
+  text-decoration: none;
+  font-size: 14px;
+
+  transition: 0.2s;
+}
+
+.back-link:hover {
+  color: #f5c451;
+}
+
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.salas-container {
+  width: 100%;
+  max-width: 1000px;
+
+  margin: 0 auto;
+  padding: 45px 25px 60px;
+}
+
+
+/* =========================
+   TITULO
+========================= */
+
+.page-title {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.title-icon {
+  display: block;
+
+  color: #f5c451;
+  font-size: 45px;
+
+  margin-bottom: 8px;
+}
+
+.page-title h2 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.page-title p {
+  margin-top: 10px;
+
+  color: #929292;
+  font-size: 14px;
+}
+
+
+/* =========================
+   CARD ACCIONES
+========================= */
+
+.actions-card {
+  background: rgba(10, 10, 10, 0.92);
+
+  border: 1px solid rgba(245, 196, 81, 0.25);
+  border-radius: 18px;
+
+  padding: 25px;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.action-icon {
+  min-width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #121212;
+  border: 1px solid rgba(245, 196, 81, 0.4);
+
+  color: #f5c451;
+
+  font-size: 27px;
+}
+
+.action-info {
+  flex: 1;
+}
+
+.action-info h3 {
+  margin: 0 0 7px;
+
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.action-info p {
+  margin: 0;
+
+  color: #8f8f8f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.action-button {
+  --border-radius: 10px;
+
+  min-width: 150px;
+
+  font-weight: 700;
+}
+
+.divider {
+  height: 1px;
+
+  margin: 25px 0;
+
+  background: #292929;
+}
+
+
+/* =========================
+   SALAS DISPONIBLES
+========================= */
+
+.available-section {
+  margin-top: 40px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.section-header h3 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 21px;
+}
+
+.section-header p {
+  margin: 5px 0 0;
+
+  color: #888888;
+  font-size: 13px;
+}
+
+.room-count {
+  color: #f5c451;
+
+  font-size: 13px;
+
+  padding: 7px 14px;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+  border-radius: 20px;
+}
+
+
+/* =========================
+   SIN SALAS
+========================= */
+
+.empty-rooms {
+  text-align: center;
+
+  padding: 55px 20px;
+
+  background: rgba(10, 10, 10, 0.8);
+
+  border: 1px dashed rgba(245, 196, 81, 0.25);
+  border-radius: 18px;
+}
+
+.empty-icon {
+  color: #f5c451;
+  font-size: 42px;
+
+  margin-bottom: 10px;
+}
+
+.empty-rooms h3 {
+  margin: 5px 0;
+
+  color: #ffffff;
+  font-size: 19px;
+}
+
+.empty-rooms p {
+  max-width: 450px;
+
+  margin: 10px auto 22px;
+
+  color: #858585;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.create-first-button {
+  --border-radius: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+  .top-header {
+    padding: 18px 20px;
+  }
+
+  .brand h1 {
+    font-size: 16px;
+  }
+
+  .back-link {
+    font-size: 12px;
+  }
+
+  .salas-container {
+    padding: 30px 18px;
+  }
+
+  .page-title h2 {
+    font-size: 27px;
+  }
+
+  .action {
+    flex-wrap: wrap;
+  }
+
+  .action-button {
+    width: 100%;
+  }
+
+}

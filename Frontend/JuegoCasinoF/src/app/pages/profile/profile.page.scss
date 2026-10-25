@@ -1,477 +1,109 @@
-
-/* ========================================= */
-/* FONDO */
-/* ========================================= */
-
-ion-content {
-  --background: none;
-
-  background-image: url('/assets/imagenes/pantallaInicio1.jpg');
-
-  background-size: cover;
-
-  background-position: center;
-
-  background-repeat: no-repeat;
-}
-
-
-/* ========================================= */
-/* CONTENEDOR */
-/* ========================================= */
-
-.profile-container {
-
-  min-height: 100%;
-
-  width: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  box-sizing: border-box;
-
-  padding: 22px 35px;
-
-  background: rgba(0, 0, 0, 0.42);
-}
-
-
-/* ========================================= */
-/* ENCABEZADO */
-/* ========================================= */
-
-.profile-header {
-
-  width: 100%;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  padding-bottom: 18px;
-
-  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
-}
-
-
-.casino-logo {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-
-.logo-symbol {
-
-  color: #d4af37;
-
-  font-size: 38px;
-
-  line-height: 1;
-}
-
-
-.casino-logo h1 {
-
+.brand-icon {
   color: #f5c451;
-
-  font-size: 24px;
-
-  font-weight: 800;
-
-  letter-spacing: 4px;
-
-  margin: 0;
-
-  line-height: 1;
-}
-
-
-.logo-subtitle {
-
-  display: block;
-
-  color: #ffffff;
-
-  font-size: 9px;
-
-  letter-spacing: 5px;
-
-  margin-top: 5px;
-
-  opacity: 0.8;
-}
-
-
-.page-title {
-
-  color: #aeb4ba;
-
-  font-size: 11px;
-
-  letter-spacing: 3px;
-
-  font-weight: 600;
-}
-
-
-/* ========================================= */
-/* CONTENIDO */
-/* ========================================= */
-
-.profile-content {
-
-  flex: 1;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  padding: 20px 0;
-}
-
-
-/* ========================================= */
-/* TARJETA DEL PERFIL */
-/* ========================================= */
-
-.profile-card {
-
-  width: 100%;
-
-  max-width: 500px;
-
-  text-align: center;
-
-  background: rgba(5, 5, 5, 0.72);
-
-  border: 1px solid rgba(212, 175, 55, 0.65);
-
-  border-radius: 20px;
-
-  padding: 20px;
-
-  box-sizing: border-box;
-
-  backdrop-filter: blur(4px);
-}
-
-
-.profile-avatar {
-
-  width: 68px;
-
-  height: 68px;
-
-  margin: 0 auto 10px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(212, 175, 55, 0.08);
-
-  border: 1px solid rgba(212, 175, 55, 0.65);
-
-  color: #f5c451;
-
   font-size: 32px;
 }
 
-
-.profile-card h2 {
-
-  color: #ffffff;
-
-  font-size: 23px;
-
-  margin: 0 0 4px;
-
-  font-weight: 700;
-}
-
-
-.username {
-
-  color: #aeb4ba;
-
-  font-size: 13px;
-
-  margin: 0;
-}
-
-
-.profile-line {
-
-  width: 50px;
-
-  height: 1px;
-
-  margin: 12px auto;
-
-  background: #d4af37;
-}
-
-
-.member-text {
-
-  color: #777f86;
-
-  font-size: 10px;
-
-  letter-spacing: 1px;
-
-  margin: 0;
-}
-
-
-/* ========================================= */
-/* ESTADÍSTICAS */
-/* ========================================= */
-
-.stats-container {
-
+.history-card {
   width: 100%;
-
-  max-width: 700px;
-
-  display: grid;
-
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 15px;
-
-  margin-top: 15px;
+  max-width: 850px;
+  margin: 28px auto;
+  padding: 28px;
+  background: #090909;
+  border: 1px solid rgba(245, 196, 81, 0.25);
+  border-radius: 18px;
+  color: #f5f5f5;
 }
 
-
-.stat-card {
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-height: 95px;
-
-  background: rgba(5, 5, 5, 0.72);
-
-  border: 1px solid rgba(212, 175, 55, 0.45);
-
-  border-radius: 15px;
-
-  backdrop-filter: blur(4px);
+.section-heading {
+  margin-bottom: 24px;
 }
 
-
-.stat-icon {
-
-  font-size: 20px;
-
-  margin-bottom: 3px;
-}
-
-
-.stat-card strong {
-
+.section-eyebrow {
   color: #f5c451;
-
-  font-size: 22px;
-}
-
-
-.stat-label {
-
-  color: #8e959c;
-
-  font-size: 8px;
-
-  letter-spacing: 2px;
-
-  margin-top: 3px;
-}
-
-
-/* ========================================= */
-/* OPCIONES */
-/* ========================================= */
-
-.options-card {
-
-  width: 100%;
-
-  max-width: 700px;
-
-  margin-top: 15px;
-
-  background: rgba(5, 5, 5, 0.72);
-
-  border: 1px solid rgba(212, 175, 55, 0.45);
-
-  border-radius: 15px;
-
-  overflow: hidden;
-
-  backdrop-filter: blur(4px);
-}
-
-
-.profile-option {
-
-  width: 100%;
-
-  min-height: 48px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 13px;
-
-  padding: 0 18px;
-
-  border: none;
-
-  border-bottom: 1px solid rgba(69, 73, 77, 0.6);
-
-  background: transparent;
-
-  color: #ffffff;
-
-  cursor: pointer;
-
-  text-align: left;
-
-  transition: 0.2s ease;
-}
-
-
-.profile-option:last-child {
-
-  border-bottom: none;
-}
-
-
-.profile-option:hover {
-
-  background: rgba(212, 175, 55, 0.08);
-}
-
-
-.option-icon {
-
-  color: #d4af37;
-
-  font-size: 18px;
-
-  width: 25px;
-
-  text-align: center;
-}
-
-
-.option-text {
-
-  flex: 1;
-
-  color: #d5d8dc;
-
   font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
 }
 
-
-.arrow {
-
-  color: #777f86;
-
-  font-size: 22px;
+.section-heading h2 {
+  margin: 10px 0;
+  color: #f5c451;
+  font-size: 26px;
 }
 
-
-.logout .option-icon {
-
-  color: #b71c1c;
+.section-heading p,
+.history-game p,
+.history-empty p {
+  color: #aaa;
+  line-height: 1.6;
 }
 
-
-.logout .option-text {
-
-  color: #b8bec5;
+.history-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
+.history-game {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: #111;
+  border: 1px solid #292929;
+  border-radius: 12px;
+}
 
-/* ========================================= */
-/* PIE */
-/* ========================================= */
+.game-icon {
+  color: #f5c451;
+  font-size: 32px;
+}
+
+.history-game h3 {
+  margin: 0 0 6px;
+  color: #fff;
+}
+
+.history-game p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.history-empty {
+  margin-top: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  background: #0d0d0d;
+  border: 1px dashed #48402d;
+  border-radius: 12px;
+}
+
+.empty-icon {
+  color: #f5c451;
+  font-size: 34px;
+}
+
+.history-empty h3 {
+  color: #f5c451;
+}
+
+.history-empty p {
+  max-width: 520px;
+  margin: 0 auto;
+}
 
 .profile-footer {
-
   width: 100%;
-
-  text-align: center;
-
-  padding-top: 12px;
-
-  color: #656c72;
-
-  font-size: 10px;
-
-  letter-spacing: 1px;
+  max-width: 850px;
+  margin: 0 auto 30px;
 }
 
-
-/* ========================================= */
-/* PANTALLAS PEQUEÑAS */
-/* ========================================= */
-
-@media (max-width: 900px) {
-
-  .profile-container {
-
-    padding: 18px 20px;
+@media (max-width: 600px) {
+  .history-card {
+    padding: 18px;
   }
 
-
-  .profile-header {
-
-    padding-bottom: 14px;
+  .history-options {
+    grid-template-columns: 1fr;
   }
-
-
-  .page-title {
-
-    display: none;
-  }
-
-
-  .profile-card {
-
-    max-width: 450px;
-  }
-
-
-  .stats-container,
-  .options-card {
-
-    max-width: 600px;
-  }
-
 }

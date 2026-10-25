@@ -1,0 +1,545 @@
+ion-content {
+  --background: #050505;
+}
+
+.sala-page {
+  min-height: 100%;
+
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(40, 70, 45, 0.35),
+      transparent 45%
+    ),
+    #050505;
+
+  color: #ffffff;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.top-header {
+  width: 100%;
+  padding: 22px 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(245, 196, 81, 0.2);
+
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: #f5c451;
+  font-size: 38px;
+}
+
+.brand h1 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.brand p {
+  margin: 3px 0 0;
+
+  color: #8f8f8f;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.back-link {
+  color: #aaaaaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  color: #f5c451;
+}
+
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.sala-container {
+  width: 100%;
+  max-width: 950px;
+
+  margin: 0 auto;
+
+  padding: 45px 25px 60px;
+}
+
+
+/* =========================
+   ROOM HEADER
+========================= */
+
+.room-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 25px;
+}
+
+.room-label {
+  color: #b89446;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.room-header h2 {
+  margin: 7px 0;
+
+  color: #f5c451;
+
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.room-header p {
+  margin: 0;
+
+  color: #8d8d8d;
+}
+
+
+/* =========================
+   CODIGO
+========================= */
+
+.room-code {
+  min-width: 180px;
+
+  padding: 17px;
+
+  text-align: center;
+
+  background: #101010;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+
+  border-radius: 12px;
+}
+
+.room-code span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #777777;
+
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.room-code strong {
+  color: #f5c451;
+
+  font-size: 19px;
+
+  letter-spacing: 2px;
+}
+
+
+/* =========================
+   ESTADO
+========================= */
+
+.status-card {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 18px 20px;
+
+  margin-bottom: 35px;
+
+  background: rgba(30, 45, 30, 0.4);
+
+  border: 1px solid rgba(80, 120, 80, 0.3);
+
+  border-radius: 12px;
+}
+
+.status-indicator {
+  width: 11px;
+  height: 11px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #6fa36f;
+
+  box-shadow: 0 0 10px rgba(111, 163, 111, 0.7);
+}
+
+.status-card strong {
+  color: #d4e5d4;
+
+  font-size: 14px;
+}
+
+.status-card p {
+  margin: 4px 0 0;
+
+  color: #7f8d7f;
+
+  font-size: 12px;
+}
+
+
+/* =========================
+   JUGADORES
+========================= */
+
+.players-section {
+  margin-bottom: 30px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.section-header h3 {
+  margin: 0;
+
+  color: #f5c451;
+
+  font-size: 21px;
+}
+
+.section-header p {
+  margin: 5px 0 0;
+
+  color: #858585;
+
+  font-size: 13px;
+}
+
+.player-count {
+  padding: 7px 14px;
+
+  color: #f5c451;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+
+  border-radius: 20px;
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   PLAYER CARD
+========================= */
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.player-card,
+.empty-player {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 15px 18px;
+
+  background: #0c0c0c;
+
+  border: 1px solid #242424;
+
+  border-radius: 12px;
+}
+
+.player-avatar,
+.empty-avatar {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #151515;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+
+  color: #f5c451;
+
+  font-size: 24px;
+}
+
+.player-info {
+  flex: 1;
+}
+
+.player-info strong {
+  color: #ffffff;
+
+  font-size: 15px;
+}
+
+.host-badge {
+  display: inline-block;
+
+  margin-left: 10px;
+
+  padding: 4px 8px;
+
+  color: #f5c451;
+
+  border: 1px solid rgba(245, 196, 81, 0.3);
+
+  border-radius: 10px;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #777777;
+
+  font-size: 12px;
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #555555;
+}
+
+.connection-dot.online {
+  background: #6fa36f;
+
+  box-shadow: 0 0 7px rgba(111, 163, 111, 0.7);
+}
+
+
+/* =========================
+   ESPACIOS VACÍOS
+========================= */
+
+.empty-player {
+  opacity: 0.55;
+}
+
+.empty-avatar {
+  border-style: dashed;
+
+  color: #666666;
+
+  font-size: 20px;
+}
+
+.empty-player span {
+  color: #666666;
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   REGLAS
+========================= */
+
+.rules-card {
+  padding: 22px;
+
+  margin-top: 30px;
+
+  background: rgba(10, 10, 10, 0.9);
+
+  border: 1px solid rgba(245, 196, 81, 0.2);
+
+  border-radius: 14px;
+}
+
+.rules-card h3 {
+  margin: 0 0 18px;
+
+  color: #f5c451;
+
+  font-size: 16px;
+}
+
+.rules-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 15px;
+}
+
+.rules-grid div {
+  padding: 12px;
+
+  background: #111111;
+
+  border-radius: 9px;
+}
+
+.rules-grid span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #777777;
+
+  font-size: 10px;
+
+  text-transform: uppercase;
+}
+
+.rules-grid strong {
+  color: #dddddd;
+
+  font-size: 12px;
+}
+
+
+/* =========================
+   BOTONES
+========================= */
+
+.room-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.room-actions ion-button {
+  --border-radius: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================
+   MENSAJE
+========================= */
+
+.start-message {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  margin-top: 20px;
+
+  padding: 17px 20px;
+
+  background: rgba(40, 60, 40, 0.4);
+
+  border: 1px solid rgba(100, 140, 100, 0.3);
+
+  border-radius: 12px;
+}
+
+.start-message > span {
+  color: #f5c451;
+
+  font-size: 28px;
+}
+
+.start-message strong {
+  color: #d5e5d5;
+
+  font-size: 14px;
+}
+
+.start-message p {
+  margin: 4px 0 0;
+
+  color: #899889;
+
+  font-size: 12px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+  .top-header {
+    padding: 18px 20px;
+  }
+
+  .sala-container {
+    padding: 30px 18px;
+  }
+
+  .room-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .room-code {
+    width: 100%;
+  }
+
+  .rules-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .room-actions {
+    flex-direction: column;
+  }
+
+  .room-actions ion-button {
+    width: 100%;
+  }
+}

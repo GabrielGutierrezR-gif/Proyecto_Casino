@@ -1,40 +1,77 @@
-﻿using Casino_Dominio.InterfacesLN;
+﻿
+using Casino_Dominio.InterfacesLN;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Casino_API.Controllers
 {
-    // Controlador de usuarios: datos del jugador que ya inició sesión.
-    [ApiController]
-    [Route("api/[controller]")]   // la ruta queda: api/usuarios
-    [Authorize]                   // todo este controlador exige token; sin token responde 401
-    public class UsuariosController : ControllerBase
-    {
-        private readonly IUsuarioLN _usuarioLN;
+	// Controlador de usuarios: datos del jugador que ya inició sesión.
+	[ApiController]
+	[Route("api/[controller]")]
+	[Authorize]
+	public class UsuariosController : ControllerBase
+	{
+		private readonly IUsuarioLN _usuarioLN;
 
-        // La API inyecta la lógica de usuarios (registrada en Program.cs)
-        public UsuariosController(IUsuarioLN usuarioLN)
-        {
-            _usuarioLN = usuarioLN;
-        }
+		public UsuariosController(IUsuarioLN usuarioLN)
+		{
+			_usuarioLN = usuarioLN;
+		}
 
-        // GET api/usuarios/perfil   (RG2)
-        // Devuelve nombre, correo, rol y saldo de fichas del usuario
-        [HttpGet("perfil")]
-        public async Task<IActionResult> Perfil()
-        {
-            // El Id sale del token ("sub"), no de la URL.
-            // Así cada usuario solo puede ver su propio perfil.
-            int idUsuario = int.Parse(User.FindFirst("sub")!.Value);
+		// GET api/usuarios/perfil
+		// Obtiene el perfil del usuario autenticado.
+		[HttpGet("perfil")]
+		public async Task<IActionResult> Perfil()
+		{
+			var claim = User.FindFirst("sub")?.Value;
 
-            var respuesta = await _usuarioLN.ObtenerPerfilAsync(idUsuario);
+			if (!int.TryParse(claim, out int idUsuario))
+				return Unauthorized();
 
-            // 404: el usuario del token ya no existe
-            if (!respuesta.Success)
-                return NotFound(respuesta);
+			var respuesta = await _usuarioLN.ObtenerPerfilAsync(idUsuario);
 
-            // 200: perfil con el saldo actualizado
-            return Ok(respuesta);
-        }
-    }
+			if (!respuesta.Success)
+				return NotFound(respuesta);
+
+			return Ok(respuesta);
+		}
+
+		// PUT api/usuarios/nombre
+		// Actualiza el nombre del usuario autenticado.
+		[HttpPut("nombre")]
+		public async Task<IActionResult> ActualizarNombre(
+			[FromBody] ActualizarNombreRequest datos)
+		{
+			if (datos == null ||
+				string.IsNullOrWhiteSpace(datos.NuevoNombre))
+			{
+				return BadRequest(new
+				{
+					success = false,
+					error = "Debe ingresar un nombre de usuario."
+				});
+			}
+
+			var claim = User.FindFirst("sub")?.Value;
+
+			if (!int.TryParse(claim, out int idUsuario))
+				return Unauthorized();
+
+			var respuesta =
+				await _usuarioLN.ActualizarNombreUsuarioAsync(
+					idUsuario,
+					datos.NuevoNombre);
+
+			if (!respuesta.Success)
+				return BadRequest(respuesta);
+
+			return Ok(respuesta);
+		}
+
+		// Datos que recibe el endpoint para actualizar el nombre.
+		public class ActualizarNombreRequest
+		{
+			public string NuevoNombre { get; set; } = string.Empty;
+		}
+	}
 }

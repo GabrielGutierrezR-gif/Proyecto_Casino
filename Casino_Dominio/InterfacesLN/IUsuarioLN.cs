@@ -10,5 +10,9 @@ namespace Casino_Dominio.InterfacesLN
         Task<Respuesta<clsPerfilUsuario>> LoginAsync(clsLogin datos);
 
         Task<Respuesta<clsPerfilUsuario>> ObtenerPerfilAsync(int idUsuario);
-    }
+
+		Task<Respuesta<clsPerfilUsuario>> ActualizarNombreUsuarioAsync(
+	   int idUsuario,
+	   string nuevoNombre);
+	}
 }

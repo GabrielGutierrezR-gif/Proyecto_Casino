@@ -1,0 +1,233 @@
+<ion-content [fullscreen]="true">
+
+  <div class="mesa">
+
+    <!-- ================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ================================= -->
+
+    <div class="top-bar">
+
+      <div class="casino-title">
+        <span class="crown">♛</span>
+        CASINO ROYAL
+      </div>
+
+      <div class="game-title">
+        BLACKJACK
+      </div>
+
+      <ion-button
+        class="exit-button"
+        fill="clear"
+        routerLink="/blackjack/sala">
+
+        SALIR
+
+      </ion-button>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- INFORMACIÓN DEL DEALER -->
+    <!-- ================================= -->
+
+    <div class="dealer-area">
+
+      <div class="section-title">
+        DEALER
+      </div>
+
+      <div class="dealer-cards">
+
+        @for (carta of cartasDealer; track carta.nombre) {
+
+          <img
+            [src]="carta.imagen"
+            [alt]="carta.nombre"
+            class="playing-card">
+
+        }
+
+      </div>
+
+      <div class="dealer-value">
+        Valor: {{ valorDealer }}
+      </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- MENSAJE CENTRAL -->
+    <!-- ================================= -->
+
+    <div class="game-message">
+
+      <div class="turn-indicator">
+        {{ estadoJuego }}
+      </div>
+
+      <div class="message-text">
+        {{ mensajeJuego }}
+      </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- JUGADOR -->
+    <!-- ================================= -->
+
+    <div class="player-area">
+
+      <div class="section-title">
+        {{ nombreJugador }}
+      </div>
+
+      <div class="player-cards">
+
+        @for (carta of cartasJugador; track $index) {
+
+          <img
+            [src]="carta.imagen"
+            [alt]="carta.nombre"
+            class="playing-card">
+
+        }
+
+      </div>
+
+      <div class="player-value">
+        Valor: {{ valorJugador }}
+      </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- INFORMACIÓN DEL JUGADOR -->
+    <!-- ================================= -->
+
+    <div class="player-info">
+
+      <div class="info-box">
+
+        <span class="info-label">
+          SALDO
+        </span>
+
+        <span class="info-value">
+          🪙 {{ saldo }}
+        </span>
+
+      </div>
+
+
+      <div class="info-box bet-box">
+
+        <span class="info-label">
+          APUESTA
+        </span>
+
+        <span class="info-value">
+          🪙 {{ apuesta }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- BOTONES -->
+    <!-- ================================= -->
+<div class="chips-area">
+
+  @for (ficha of fichas; track ficha.valor) {
+
+    <button
+      class="chip-button"
+      (click)="seleccionarFicha(ficha.valor)">
+
+      <img
+        [src]="ficha.imagen"
+        [alt]="'Ficha de ' + ficha.valor"
+        class="chip-image">
+
+      <span class="chip-value">
+        {{ ficha.valor }}
+      </span>
+
+    </button>
+
+  }
+
+</div>
+
+    <div class="action-area">
+
+      <ion-button
+        class="game-button"
+        color="success"
+        [disabled]="partidaTerminada"
+        (click)="pedirCarta()">
+
+        PEDIR
+
+      </ion-button>
+
+
+      <ion-button
+        class="game-button"
+        color="warning"
+        [disabled]="partidaTerminada"
+        (click)="plantarse()">
+
+        PLANTARSE
+
+      </ion-button>
+
+
+      <ion-button
+        class="game-button"
+        color="warning"
+        [disabled]="partidaTerminada"
+        (click)="doblar()">
+
+        DOBLAR
+
+      </ion-button>
+
+
+      <ion-button
+        class="game-button split-button"
+        fill="outline"
+        [disabled]="partidaTerminada"
+        (click)="dividir()">
+
+        DIVIDIR
+
+      </ion-button>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- REGLAS -->
+    <!-- ================================= -->
+
+    <div class="bottom-rules">
+
+      <span>BLACKJACK 3:2</span>
+      <span>•</span>
+      <span>DEALER STANDS ON 17</span>
+      <span>•</span>
+      <span>MAX 21</span>
+
+    </div>
+
+  </div>
+
+</ion-content>

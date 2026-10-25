@@ -28,6 +28,37 @@ export const routes: Routes = [
       import('./pages/profile/profile.page').then((m) => m.ProfilePage),
   },
   {
+    path: 'comprar-fichas',
+    loadComponent: () =>
+      import('./pages/comprar-fichas/comprar-fichas.page').then(
+        (m) => m.ComprarFichasPage
+      ),
+  },
+  {
+  path: 'blackjack/salas',
+  loadComponent: () =>
+    import('./pages/blackjack/salas/salas.page')
+      .then((m) => m.SalasPage),
+},
+{
+  path: 'blackjack/crear-sala',
+  loadComponent: () =>
+    import('./pages/blackjack/crear-sala/crear-sala.page')
+      .then((m) => m.CrearSalaPage),
+},
+{
+  path: 'blackjack/sala',
+  loadComponent: () =>
+    import('./pages/blackjack/sala/sala.page')
+      .then((m) => m.SalaPage),
+},
+{
+  path: 'blackjack/mesa',
+  loadComponent: () =>
+    import('./pages/blackjack/mesa/mesa.page')
+      .then((m) => m.MesaPage),
+},
+  {
     path: '**',
     redirectTo: 'login',
   },

@@ -1,0 +1,103 @@
+ion-content {
+  --background: #050505;
+}
+
+.purchase-container {
+  min-height: 100%;
+  padding: 28px;
+  color: #fff;
+  background: #050505;
+}
+
+.purchase-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #292929;
+}
+
+.brand {
+  color: #f5c451;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.purchase-header p {
+  margin: 5px 0 0;
+  color: #929292;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.purchase-content {
+  width: 100%;
+  max-width: 650px;
+  margin: 65px auto;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #f5c451;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.purchase-content h1 {
+  margin: 14px 0;
+  font-size: clamp(30px, 5vw, 44px);
+  color: #f5c451;
+}
+
+.description {
+  color: #aaa;
+  line-height: 1.7;
+}
+
+.coming-soon {
+  margin: 35px 0 25px;
+  padding: 35px 25px;
+  background: #0d0d0d;
+  border: 1px solid #69552e;
+  border-radius: 18px;
+}
+
+.chip-icon {
+  color: #f5c451;
+  font-size: 58px;
+}
+
+.coming-soon h2 {
+  color: #f5c451;
+}
+
+.coming-soon p {
+  max-width: 420px;
+  margin: 0 auto;
+  color: #aaa;
+  line-height: 1.7;
+}
+
+ion-button {
+  --border-radius: 10px;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .purchase-container {
+    padding: 18px;
+  }
+
+  .purchase-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .purchase-content {
+    margin-top: 40px;
+  }
+}

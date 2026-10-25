@@ -1,4 +1,3 @@
-
 <ion-content [fullscreen]="true">
 
   <div class="home-container">
@@ -10,7 +9,7 @@
     <header class="top-bar">
 
       <div class="casino-logo">
-        <span class="logo-symbol">♠</span>
+
 
         <div>
           <h1>CASINO</h1>
@@ -27,29 +26,50 @@
 
           <div>
             <span class="balance-label">FICHAS</span>
-            <strong>500</strong>
+            <strong>
+  @if (cargando) {
+    Cargando...
+  } @else {
+    {{ usuario?.saldoFichas ?? 0 }}
+  }
+</strong>
           </div>
 
         </div>
 
+<ion-button
+  color="warning"
+  routerLink="/comprar-fichas">
+  <span class="purchase-icon">💰</span>
+  Comprar fichas
+</ion-button>
 
-        <div class="user-profile">
+<div class="user-profile">
+  <div class="profile-icon">👤</div>
 
-          <div class="profile-icon">
-            ♟
-          </div>
+  <div class="profile-info">
+    <span>BIENVENIDO</span>
 
-          <div class="profile-info">
-            <span>BIENVENIDO</span>
-            <strong>Jugador</strong>
-          </div>
+    <strong>
+      @if (cargando) {
+        Cargando...
+      } @else {
+        {{ usuario?.nombreUsuario ?? 'Usuario' }}
+      }
+    </strong>
+  </div>
+</div>
 
-        </div>
 
 
-        <button class="settings-button">
-          ⚙
-        </button>
+
+        <button
+  class="settings-button"
+  routerLink="/profile"
+  aria-label="Abrir mi perfil">
+  ⚙️
+</button>
+
 
       </div>
 
@@ -71,7 +91,7 @@
         </h2>
 
         <p class="welcome-text">
-          Elige tu juego y comienza a disfrutar de la experiencia.
+          Elige tu juego y disfrutar la experiencia.
         </p>
 
       </div>
@@ -94,7 +114,7 @@
           <div class="game-info">
 
             <span class="game-category">
-              JUEGO DE CARTAS
+              JUEGO DE CARTAS ONLINE
             </span>
 
             <h3>
@@ -102,18 +122,16 @@
             </h3>
 
             <p>
-              Acércate a 21 y vence al crupier.
+              Acércate a 21 y vence a tus amigos.
             </p>
 
           </div>
 
           <ion-button
-            class="game-button"
-            fill="solid">
-
-            JUGAR
-
-          </ion-button>
+  color="warning"
+  routerLink="/blackjack/salas">
+  Jugar
+</ion-button>
 
         </div>
 
@@ -129,7 +147,7 @@
           <div class="game-info">
 
             <span class="game-category">
-              JUEGO DE CASINO
+              JUEGO RULETA
             </span>
 
             <h3>
@@ -146,7 +164,7 @@
             class="game-button"
             fill="solid">
 
-            JUGAR
+            Jugar
 
           </ion-button>
 
@@ -159,39 +177,10 @@
 
     <footer class="bottom-bar">
 
-      <button class="bottom-option">
-
-        <span class="bottom-icon">
-          🏆
-        </span>
-
-        <span>
-          HISTORIAL
-        </span>
-
-      </button>
-
-
-      <div class="responsible-text">
-        Juega responsablemente
-      </div>
-
-
-      <button class="bottom-option">
-
-        <span class="bottom-icon">
-          ⚙
-        </span>
-
-        <span>
-          CONFIGURACIÓN
-        </span>
-
-      </button>
 
     </footer>
 
   </div>
 
 </ion-content>
-```
+

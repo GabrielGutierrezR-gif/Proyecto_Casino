@@ -1,0 +1,273 @@
+<ion-content [fullscreen]="true">
+
+  <div class="sala-page">
+
+    <!-- HEADER -->
+    <header class="top-header">
+
+      <div class="brand">
+
+
+        <div>
+          <h1>CASINO ROYAL</h1>
+          <p>BLACKJACK</p>
+        </div>
+
+      </div>
+
+      <a
+        routerLink="/blackjack/salas"
+        class="back-link">
+
+        ← Salir de la sala
+
+      </a>
+
+    </header>
+
+
+    <!-- CONTENIDO -->
+    <main class="sala-container">
+
+
+      <!-- INFORMACIÓN DE LA SALA -->
+
+      <section class="room-header">
+
+        <div>
+
+          <span class="room-label">
+            SALA DE BLACKJACK
+          </span>
+
+          <h2>
+            {{ nombreSala }}
+          </h2>
+
+          <p>
+            Esperando jugadores...
+          </p>
+
+        </div>
+
+
+        <div class="room-code">
+
+          <span>CÓDIGO DE SALA</span>
+
+          <strong>
+            {{ codigoSala }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ESTADO -->
+
+      <section class="status-card">
+
+
+        <div>
+
+          <strong>
+            Esperando jugadores
+          </strong>
+
+          <p>
+            La partida comenzará cuando el creador
+            decida iniciar la mesa.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- JUGADORES -->
+
+      <section class="players-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <h3>
+              Jugadores
+            </h3>
+
+            <p>
+              Jugadores conectados a la mesa
+            </p>
+
+          </div>
+
+          <span class="player-count">
+            {{ jugadores.length }}/{{ maxJugadores }}
+          </span>
+
+        </div>
+
+
+        <div class="players-list">
+
+          @for (jugador of jugadores; track jugador.nombre) {
+
+            <div class="player-card">
+
+              <div class="player-avatar">
+                👤
+              </div>
+
+
+              <div class="player-info">
+
+                <strong>
+                  {{ jugador.nombre }}
+                </strong>
+
+                @if (jugador.esCreador) {
+
+                  <span class="host-badge">
+                    CREADOR
+                  </span>
+
+                }
+
+              </div>
+
+
+              <div class="connection-status">
+
+                <span
+                  class="connection-dot"
+                  [class.online]="jugador.conectado">
+                </span>
+
+                <span>
+                  Conectado
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          <!-- ESPACIOS VACÍOS -->
+
+          @for (
+            espacio of [].constructor(maxJugadores - jugadores.length);
+            track $index
+          ) {
+
+            <div class="empty-player">
+
+              <div class="empty-avatar">
+                +
+              </div>
+
+              <span>
+                Esperando jugador...
+              </span>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- REGLAS -->
+
+      <section class="rules-card">
+
+        <h3>
+          Reglas de esta mesa
+        </h3>
+
+        <div class="rules-grid">
+
+          <div>
+            <span>Jugadores</span>
+            <strong>Máximo {{ maxJugadores }}</strong>
+          </div>
+
+          <div>
+            <span>Dealer</span>
+            <strong>Automático</strong>
+          </div>
+
+          <div>
+            <span>Blackjack</span>
+            <strong>3:2</strong>
+          </div>
+
+          <div>
+            <span>Acciones</span>
+            <strong>Hit · Stand · Double · Split</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- BOTONES -->
+
+      <section class="room-actions">
+
+        <ion-button
+          fill="outline"
+          color="warning"
+          routerLink="/blackjack/salas">
+
+          Salir de la sala
+
+        </ion-button>
+
+
+        <ion-button
+  color="warning"
+  routerLink="/blackjack/mesa"
+  (click)="comenzarPartida()">
+
+  Comenzar partida
+
+</ion-button>
+
+      </section>
+
+
+      @if (partidaIniciada) {
+
+        <div class="start-message">
+
+
+          <div>
+
+            <strong>
+              ¡La mesa está lista!
+            </strong>
+
+            <p>
+              Próximamente entraremos a la mesa
+              de Blackjack.
+            </p>
+
+          </div>
+
+        </div>
+
+      }
+
+
+    </main>
+
+  </div>
+
+</ion-content>

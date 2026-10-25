@@ -1,0 +1,519 @@
+ion-content {
+  --background: #101b14;
+}
+
+
+/* =========================================
+   MESA PRINCIPAL
+========================================= */
+
+.mesa {
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  background-image:
+    linear-gradient(
+      rgba(0, 0, 0, 0.18),
+      rgba(0, 0, 0, 0.18)
+    ),
+    url('/assets/imagenes/blackjackfondo.jpg');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: white;
+
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+
+/* =========================================
+   BARRA SUPERIOR
+========================================= */
+
+.top-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+
+  height: 70px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 25px;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  border-bottom: 1px solid rgba(245, 196, 81, 0.35);
+
+  z-index: 20;
+}
+
+
+.casino-title {
+  color: #f5c451;
+
+  font-size: 20px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+
+.crown {
+  font-size: 25px;
+
+  margin-right: 8px;
+}
+
+
+.game-title {
+  position: absolute;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  color: #f5c451;
+
+  font-size: 26px;
+
+  font-weight: 900;
+
+  letter-spacing: 4px;
+}
+
+
+.exit-button {
+  --color: #ffffff;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   DEALER
+========================================= */
+
+.dealer-area {
+
+  position: absolute;
+
+  top: 82px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+
+  width: 400px;
+}
+
+
+.section-title {
+
+  color: #f5c451;
+
+  font-size: 16px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  margin-bottom: 8px;
+}
+
+
+.dealer-cards {
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.playing-card {
+
+  width: 82px;
+
+  height: auto;
+
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.65));
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+
+.playing-card:hover {
+
+  transform: translateY(-5px);
+
+  filter: drop-shadow(
+    0 8px 8px rgba(0, 0, 0, 0.8)
+  );
+}
+
+
+.dealer-value {
+
+  margin-top: 5px;
+
+  color: #ffffff;
+
+  font-size: 15px;
+
+  font-weight: bold;
+}
+
+
+/* =========================================
+   MENSAJE CENTRAL
+========================================= */
+
+.game-message {
+
+  position: absolute;
+
+  top: 43%;
+
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+
+  min-width: 260px;
+
+  padding: 10px 20px;
+
+  border-radius: 15px;
+
+  background: rgba(0, 0, 0, 0.32);
+
+  border: 1px solid rgba(245, 196, 81, 0.25);
+
+  backdrop-filter: blur(3px);
+}
+
+
+.turn-indicator {
+
+  color: #f5c451;
+
+  font-size: 20px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+
+.message-text {
+
+  margin-top: 4px;
+
+  color: #ffffff;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   JUGADOR
+========================================= */
+
+.player-area {
+
+  position: absolute;
+
+  bottom: 105px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+
+  width: 500px;
+}
+
+
+.player-cards {
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.player-value {
+
+  margin-top: 5px;
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: bold;
+}
+
+
+/* =========================================
+   INFORMACIÓN
+========================================= */
+
+.player-info {
+
+  position: absolute;
+
+  left: 25px;
+
+  bottom: 25px;
+
+  display: flex;
+
+  gap: 12px;
+}
+
+
+.info-box {
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  min-width: 125px;
+
+  padding: 8px 14px;
+
+  border-radius: 10px;
+
+  background: rgba(0, 0, 0, 0.75);
+
+  border: 1px solid rgba(245, 196, 81, 0.55);
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+
+.info-label {
+
+  color: #aaaaaa;
+
+  font-size: 10px;
+
+  letter-spacing: 1px;
+}
+
+
+.info-value {
+
+  margin-top: 2px;
+
+  color: #f5c451;
+
+  font-size: 17px;
+
+  font-weight: 900;
+}
+
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.action-area {
+
+  position: absolute;
+
+  right: 25px;
+
+  bottom: 25px;
+
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+}
+
+
+.game-button {
+
+  --border-radius: 9px;
+
+  height: 43px;
+
+  min-width: 105px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+
+.split-button {
+
+  --color: #f5c451;
+
+  --border-color: #f5c451;
+
+  min-width: 90px;
+}
+
+
+/* =========================================
+   REGLAS
+========================================= */
+
+.bottom-rules {
+
+  position: absolute;
+
+  bottom: 8px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+
+  color: rgba(255, 255, 255, 0.7);
+
+  font-size: 9px;
+
+  letter-spacing: 1px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+  .playing-card {
+    width: 65px;
+  }
+
+  .dealer-area {
+    top: 75px;
+  }
+
+  .player-area {
+    bottom: 90px;
+  }
+
+  .game-button {
+    min-width: 85px;
+    font-size: 11px;
+  }
+
+  .info-box {
+    min-width: 100px;
+  }
+  .chips-area {
+  position: absolute;
+  right: 25px;
+  bottom: 82px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 12px;
+
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(245, 196, 81, 0.35);
+  border-radius: 12px;
+
+  backdrop-filter: blur(4px);
+}
+
+.chip-button {
+  position: relative;
+
+  width: 52px;
+  height: 52px;
+
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.chip-button:hover {
+  transform: translateY(-5px) scale(1.05);
+  filter: brightness(1.15);
+}
+
+.chip-button:active {
+  transform: scale(0.92);
+}
+
+.chip-image {
+  width: 52px;
+  height: 52px;
+
+  object-fit: contain;
+
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.7));
+}
+
+.chip-value {
+  position: absolute;
+
+  left: 50%;
+  bottom: -4px;
+
+  transform: translateX(-50%);
+
+  padding: 2px 5px;
+
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+
+  color: #ffffff;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+}

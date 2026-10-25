@@ -1,0 +1,320 @@
+ion-content {
+  --background: #050505;
+}
+
+.crear-sala-page {
+  min-height: 100%;
+
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(40, 70, 45, 0.35),
+      transparent 45%
+    ),
+    #050505;
+
+  color: #ffffff;
+}
+
+
+/* HEADER */
+
+.top-header {
+  width: 100%;
+  padding: 22px 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(245, 196, 81, 0.2);
+
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: #f5c451;
+  font-size: 38px;
+}
+
+.brand h1 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.brand p {
+  margin: 3px 0 0;
+
+  color: #8f8f8f;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.back-link {
+  color: #aaaaaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  color: #f5c451;
+}
+
+
+/* CONTENIDO */
+
+.crear-container {
+  width: 100%;
+  max-width: 850px;
+
+  margin: 0 auto;
+  padding: 45px 25px 60px;
+}
+
+
+/* TITULO */
+
+.page-title {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.title-icon {
+  display: block;
+
+  color: #f5c451;
+  font-size: 45px;
+  margin-bottom: 8px;
+}
+
+.page-title h2 {
+  margin: 0;
+
+  color: #f5c451;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.page-title p {
+  margin-top: 10px;
+
+  color: #929292;
+  font-size: 14px;
+}
+
+
+/* CARD */
+
+.form-card {
+  padding: 30px;
+
+  background: rgba(10, 10, 10, 0.94);
+
+  border: 1px solid rgba(245, 196, 81, 0.25);
+  border-radius: 18px;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+/* SECCIONES */
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section h3 {
+  margin: 0 0 7px;
+
+  color: #f5c451;
+  font-size: 18px;
+}
+
+.section-description {
+  margin: 0 0 15px;
+
+  color: #888888;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* INPUTS */
+
+.casino-input {
+  --background: #111111;
+  --color: #ffffff;
+  --border-color: #514628;
+  --highlight-color-focused: #f5c451;
+
+  margin-bottom: 12px;
+
+  border: 1px solid #292929;
+  border-radius: 10px;
+}
+
+.casino-input ion-label {
+  color: #b89446;
+}
+
+
+/* PRIVACIDAD */
+
+.privacy-options {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+}
+
+.privacy-option {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  background: #101010;
+
+  border: 1px solid #292929;
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.privacy-option:hover {
+  border-color: rgba(245, 196, 81, 0.5);
+}
+
+.privacy-option.selected {
+  border-color: #f5c451;
+
+  background: rgba(245, 196, 81, 0.07);
+}
+
+.option-icon {
+  font-size: 25px;
+}
+
+.privacy-option strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #f5c451;
+}
+
+.privacy-option small {
+  display: block;
+
+  color: #858585;
+}
+
+
+/* APUESTAS */
+
+.bet-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+}
+
+
+/* REGLAS */
+
+.rules-box {
+  margin-top: 10px;
+  padding: 20px;
+
+  background: rgba(30, 45, 30, 0.35);
+
+  border: 1px solid rgba(80, 120, 80, 0.25);
+  border-radius: 12px;
+}
+
+.rules-box h3 {
+  margin: 0 0 12px;
+
+  color: #f5c451;
+  font-size: 16px;
+}
+
+.rules-box ul {
+  margin: 0;
+  padding-left: 20px;
+
+  color: #aaa;
+
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+
+/* BOTONES */
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.form-actions ion-button {
+  --border-radius: 10px;
+
+  font-weight: 700;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+
+  .top-header {
+    padding: 18px 20px;
+  }
+
+  .crear-container {
+    padding: 30px 18px;
+  }
+
+  .form-card {
+    padding: 20px;
+  }
+
+  .privacy-options,
+  .bet-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions ion-button {
+    width: 100%;
+  }
+}

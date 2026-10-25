@@ -183,10 +183,90 @@ namespace Casino_LogicaNegocios.Implementaciones
             return resultado;
         }
 
-        // ========== Métodos de apoyo ==========
+		// Actualizar nombre de usuario
+		public async Task<Respuesta<clsPerfilUsuario>> ActualizarNombreUsuarioAsync(
+			int idUsuario,
+			string nuevoNombre)
+		{
+			var resultado = new Respuesta<clsPerfilUsuario>();
+
+			try
+			{
+				var nombre = nuevoNombre?.Trim() ?? "";
+
+				if (nombre.Length < 3 || nombre.Length > 50)
+				{
+					resultado.Success = false;
+					resultado.Error =
+						"El nombre de usuario debe tener entre 3 y 50 caracteres.";
+					return resultado;
+				}
+
+				// Buscar al usuario que inició sesión
+				var respuestaUsuario =
+					await _unidadDeTrabajo.TUsuario.ObtenerEntidadAsync(
+						x => x.IdUsuario == idUsuario);
+
+				if (!respuestaUsuario.Success || respuestaUsuario.Data == null)
+				{
+					resultado.Success = false;
+					resultado.Error = "Usuario no encontrado.";
+					return resultado;
+				}
+
+				// Comprobar si otro usuario ya utiliza ese nombre
+				var respuestaExistente =
+					await _unidadDeTrabajo.TUsuario.ContarAsync(
+						x => x.NombreUsuario == nombre && x.IdUsuario != idUsuario);
+
+				if (!respuestaExistente.Success)
+				{
+					resultado.Success = false;
+					resultado.Error = respuestaExistente.Error;
+					return resultado;
+				}
+
+				if (respuestaExistente.Data.GetValueOrDefault() > 0)
+				{
+					resultado.Success = false;
+					resultado.Error = "Ese nombre de usuario ya está en uso.";
+					return resultado;
+				}
+
+				// Cambiar y guardar el nombre
+				var usuario = respuestaUsuario.Data;
+				usuario.NombreUsuario = nombre;
+
+				var respuestaModificacion =
+					await _unidadDeTrabajo.TUsuario.ModificarAsync(usuario);
+
+				if (!respuestaModificacion.Success || respuestaModificacion.Data == null)
+				{
+					resultado.Success = false;
+					resultado.Error = respuestaModificacion.Error
+						?? "No se pudo actualizar el nombre de usuario.";
+					return resultado;
+				}
+
+				resultado.Data =
+					_mapper.Map<clsPerfilUsuario>(respuestaModificacion.Data);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex,
+					"Error al actualizar nombre de usuario {IdUsuario}", idUsuario);
+
+				resultado.Success = false;
+				resultado.Error = ex.GetBaseException().Message;
+			}
+
+			return resultado;
+		}
+
+		// ========== Métodos de apoyo ==========
 
 
-        private static bool CorreoValido(string correo)
+		private static bool CorreoValido(string correo)
         {
             try
             {

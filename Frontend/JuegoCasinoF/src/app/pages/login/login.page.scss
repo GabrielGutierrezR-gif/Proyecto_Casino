@@ -211,7 +211,7 @@ transform: translateX(10px); //mover derecha
 /* pantallas pequeñas */
 
 
-@media (max-width: 900px) {
+@media (max-width: 900px) and (min-height: 501px) {
 
   .login-container {
     align-items: center;

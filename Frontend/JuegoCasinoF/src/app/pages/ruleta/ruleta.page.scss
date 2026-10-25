@@ -531,7 +531,7 @@ ion-button {
    RESPONSIVE
 ========================= */
 
-@media (max-width: 900px) {
+@media (max-width: 900px) and (min-height: 501px) {
 
   .ruleta-container {
     grid-template-columns: 1fr;
@@ -563,5 +563,38 @@ ion-button {
 
   .cell.outside {
     font-size: 10px;
+  }
+}
+
+// Celular en horizontal: rueda y tablero lado a lado, sin espacios de sobra
+@media (orientation: landscape) and (max-height: 500px) {
+
+  .top-header {
+    padding: 10px 30px;
+  }
+
+  .ruleta-container {
+    gap: 24px;
+    padding: 14px 30px 16px;
+  }
+
+  .wheel-section {
+    gap: 12px;
+  }
+
+  .board-section {
+    gap: 10px;
+  }
+
+  .board {
+    padding: 10px;
+  }
+
+  .cell {
+    min-height: 40px;
+  }
+
+  .board-hint {
+    display: none;
   }
 }

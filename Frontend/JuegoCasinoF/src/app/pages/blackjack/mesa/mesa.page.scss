@@ -674,3 +674,79 @@ ion-content {
     height: 46px;
   }
 }
+
+// Celular en horizontal: todo debe caber sin desplazarse.
+// Dealer arriba, mensaje (y los otros jugadores) en medio, tu mano debajo
+// y en la última fila saldo + fichas + botones lado a lado.
+@media (orientation: landscape) and (max-height: 500px) {
+
+  .top-bar {
+    min-height: 50px;
+  }
+
+  .table-layout {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px 14px;
+
+    padding: 8px 20px 10px;
+  }
+
+  .dealer-area,
+  .player-area {
+    flex-basis: 100%;
+  }
+
+  .section-title {
+    margin-bottom: 4px;
+    padding: 2px 12px;
+
+    font-size: 13px;
+  }
+
+  .cards-row {
+    min-height: 74px;
+  }
+
+  .playing-card {
+    width: 58px;
+  }
+
+  .hand-value {
+    margin-top: 2px;
+  }
+
+  .my-hand {
+    padding: 4px 8px;
+  }
+
+  .game-message {
+    padding: 6px 16px;
+  }
+
+  .info-box {
+    min-width: 100px;
+    padding: 6px 12px;
+  }
+
+  .chips-area {
+    padding: 6px 10px;
+  }
+
+  .chip-button,
+  .chip-image {
+    width: 46px;
+    height: 46px;
+  }
+
+  .game-button {
+    height: 38px;
+    min-width: 90px;
+  }
+
+  .bottom-rules {
+    display: none;
+  }
+}

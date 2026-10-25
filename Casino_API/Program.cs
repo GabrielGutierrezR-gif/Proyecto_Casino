@@ -51,14 +51,12 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy("FrontendCasino", policy =>
 	{
-		// 8100: ionic serve · 4200: ng serve · capacitor/localhost: app instalada en el teléfono
+		// Cualquier puerto de localhost (ionic serve usa 8100, 8101... si el anterior está ocupado)
+		// y capacitor://localhost para la app instalada en el teléfono
 		policy
-			.WithOrigins(
-				"http://localhost:8100",
-				"http://localhost:4200",
-				"http://localhost",
-				"https://localhost",
-				"capacitor://localhost")
+			.SetIsOriginAllowed(origen =>
+				Uri.TryCreate(origen, UriKind.Absolute, out var uri) &&
+				uri.Host == "localhost")
 			.AllowAnyHeader()
 			.AllowAnyMethod()
 			.AllowCredentials();   // lo exige SignalR
@@ -107,6 +105,20 @@ builder.Services
 				}
 
 				return Task.CompletedTask;
+			},
+
+			// Si el usuario del token ya no existe en la BD (lo borraron), la sesión deja de valer:
+			// la API responde 401 y la app vuelve al login.
+			OnTokenValidated = async contexto =>
+			{
+				var sub = contexto.Principal?.FindFirst("sub")?.Value;
+				var bd = contexto.HttpContext.RequestServices.GetRequiredService<CasinoContext>();
+
+				if (!int.TryParse(sub, out int idUsuario) ||
+					!await bd.Usuarios.AnyAsync(u => u.IdUsuario == idUsuario))
+				{
+					contexto.Fail("El usuario ya no existe.");
+				}
 			}
 		};
 	});

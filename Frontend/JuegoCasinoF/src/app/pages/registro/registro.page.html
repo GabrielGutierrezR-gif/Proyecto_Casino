@@ -10,103 +10,164 @@
 
     <div class="registro-card">
 
-      <h2>Crea tu cuenta</h2>
+      <h2>{{ paso() === 'datos' ? 'Crea tu cuenta' : 'Verifica tu correo' }}</h2>
 
       <p class="subtitle">
-        Regístrate para comenzar a disfrutar
+        {{ paso() === 'datos' ? 'Regístrate para comenzar a disfrutar' : 'Paso 2 de 2' }}
       </p>
 
-      <form (ngSubmit)="registrar()">
+      @if (paso() === 'datos') {
 
-        <!-- Nombre de usuario -->
-        <ion-item lines="none" class="input-item">
-          <ion-icon
-            name="person-outline"
-            slot="start">
-          </ion-icon>
+        <form (ngSubmit)="enviarCodigo()">
 
-          <ion-input
-            name="nombreUsuario"
-            type="text"
-            placeholder="Nombre de usuario"
-            autocomplete="username"
-            [(ngModel)]="nombreUsuario"
-            required>
-          </ion-input>
-        </ion-item>
+          <!-- Nombre de usuario -->
+          <ion-item lines="none" class="input-item">
+            <ion-icon
+              name="person-outline"
+              slot="start">
+            </ion-icon>
 
-        <!-- Correo electrónico -->
-        <ion-item lines="none" class="input-item">
-          <ion-icon
-            name="mail-outline"
-            slot="start">
-          </ion-icon>
+            <ion-input
+              name="nombreUsuario"
+              type="text"
+              placeholder="Nombre de usuario"
+              autocomplete="username"
+              [(ngModel)]="nombreUsuario"
+              required>
+            </ion-input>
+          </ion-item>
 
-          <ion-input
-            name="correo"
-            type="email"
-            placeholder="Correo electrónico"
-            autocomplete="email"
-            [(ngModel)]="correo"
-            required>
-          </ion-input>
-        </ion-item>
+          <!-- Correo electrónico -->
+          <ion-item lines="none" class="input-item">
+            <ion-icon
+              name="mail-outline"
+              slot="start">
+            </ion-icon>
 
-        <!-- Contraseña -->
-        <ion-item lines="none" class="input-item">
-          <ion-icon
-            name="lock-closed-outline"
-            slot="start">
-          </ion-icon>
+            <ion-input
+              name="correo"
+              type="email"
+              placeholder="Correo electrónico"
+              autocomplete="email"
+              [(ngModel)]="correo"
+              required>
+            </ion-input>
+          </ion-item>
 
-          <ion-input
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            autocomplete="new-password"
-            [(ngModel)]="password"
-            required>
-          </ion-input>
-        </ion-item>
+          <!-- Contraseña -->
+          <ion-item lines="none" class="input-item">
+            <ion-icon
+              name="lock-closed-outline"
+              slot="start">
+            </ion-icon>
 
-        <!-- Confirmar contraseña -->
-        <ion-item lines="none" class="input-item">
-          <ion-icon
-            name="lock-closed-outline"
-            slot="start">
-          </ion-icon>
+            <ion-input
+              name="password"
+              type="password"
+              placeholder="Contraseña"
+              autocomplete="new-password"
+              [(ngModel)]="password"
+              required>
+            </ion-input>
+          </ion-item>
 
-          <ion-input
-            name="confirmarPassword"
-            type="password"
-            placeholder="Confirmar contraseña"
-            autocomplete="new-password"
-            [(ngModel)]="confirmarPassword"
-            required>
-          </ion-input>
-        </ion-item>
+          <!-- Confirmar contraseña -->
+          <ion-item lines="none" class="input-item">
+            <ion-icon
+              name="lock-closed-outline"
+              slot="start">
+            </ion-icon>
 
-        <!-- Mensajes de validación y respuesta del servidor -->
+            <ion-input
+              name="confirmarPassword"
+              type="password"
+              placeholder="Confirmar contraseña"
+              autocomplete="new-password"
+              [(ngModel)]="confirmarPassword"
+              required>
+            </ion-input>
+          </ion-item>
 
-@if (mensaje()) {
-  <p [style.color]="esError() ? '#ff7070' : '#f5c451'">
-    {{ mensaje() }}
-  </p>
-}
+          <!-- Mensajes de validación y respuesta del servidor -->
+
+          @if (mensaje()) {
+            <p [style.color]="esError() ? '#ff7070' : '#f5c451'">
+              {{ mensaje() }}
+            </p>
+          }
 
 
-        <!-- Botón de registro -->
-        <ion-button
-          expand="block"
-          type="submit"
-          class="registro-button"
-          [disabled]="cargando()">
+          <!-- Botón de registro -->
+          <ion-button
+            expand="block"
+            type="submit"
+            class="registro-button"
+            [disabled]="cargando()">
 
-          {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+            {{ cargando() ? 'Enviando código...' : 'Continuar' }}
 
-        </ion-button>
+          </ion-button>
 
-      </form>
+        </form>
+
+      } @else {
+
+        <!-- PASO 2: código de verificación -->
+        <form (ngSubmit)="registrar()" class="codigo-form">
+
+          @if (mensaje()) {
+            <p class="codigo-mensaje" [style.color]="esError() ? '#ff7070' : '#f5c451'">
+              {{ mensaje() }}
+            </p>
+          }
+
+          <p class="codigo-ayuda">
+            Revisa tu bandeja de entrada (y la carpeta de spam) y escribe el código para terminar.
+          </p>
+
+          <ion-item lines="none" class="input-item">
+            <ion-icon
+              name="mail-outline"
+              slot="start">
+            </ion-icon>
+
+            <ion-input
+              name="codigo"
+              class="codigo-input"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="000000"
+              autocomplete="one-time-code"
+              [(ngModel)]="codigo"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            class="registro-button"
+            [disabled]="cargando()">
+
+            {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+
+          </ion-button>
+
+          <div class="codigo-acciones">
+            <button
+              type="button"
+              [disabled]="segundosReenvio() > 0 || cargando()"
+              (click)="reenviarCodigo()">
+              {{ segundosReenvio() > 0 ? 'Reenviar código en ' + segundosReenvio() + ' s' : 'Reenviar código' }}
+            </button>
+
+            <button type="button" (click)="cambiarDatos()">
+              Cambiar mis datos
+            </button>
+          </div>
+
+        </form>
+      }
 
       <!-- Enlace para iniciar sesión -->
       <p class="login-text">

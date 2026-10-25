@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -28,8 +28,16 @@ export class HomePage implements OnInit {
   esAdmin = this.authService.esAdmin;
   mensaje = '';
 
+  // Fichas del regalo de bienvenida (solo en el primer ingreso)
+  fichasBienvenida = signal<number | null>(null);
+
   ngOnInit(): void {
+    this.fichasBienvenida.set(this.authService.tomarBienvenida());
     this.cargarPerfil();
+  }
+
+  cerrarBienvenida(): void {
+    this.fichasBienvenida.set(null);
   }
 
   // Ionic reutiliza la página: al volver de jugar o comprar se refresca el saldo

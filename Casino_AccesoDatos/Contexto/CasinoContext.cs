@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Casino_Dominio.Entidades;
 using Microsoft.EntityFrameworkCore;
@@ -173,6 +173,7 @@ public partial class CasinoContext : DbContext
             entity.Property(e => e.TipoTarjeta)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.Activo).HasDefaultValue(true, "DF_MetodosPago_Activo");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.MetodosPagos)
                 .HasForeignKey(d => d.IdUsuario)
@@ -272,6 +273,7 @@ public partial class CasinoContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValue("Jugador", "DF_Usuarios_Rol");
             entity.Property(e => e.SaldoFichas).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.BienvenidaVista).HasDefaultValue(false, "DF_Usuarios_BienvenidaVista");
         });
 
         OnModelCreatingPartial(modelBuilder);

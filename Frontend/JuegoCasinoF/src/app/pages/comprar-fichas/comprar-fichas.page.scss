@@ -153,6 +153,39 @@ ion-content {
   color: #929292;
 }
 
+.card-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.card-wrapper .card-option {
+  flex: 1;
+}
+
+.delete-card {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #929292;
+  font-size: 14px;
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.delete-card:hover {
+  color: #fff;
+  background: #b3261e;
+  border-color: #b3261e;
+}
+
 .add-card {
   align-items: center;
   justify-content: center;

@@ -15,17 +15,71 @@ namespace Casino_LogicaNegocios.Implementaciones
         private readonly ILogger<UsuarioLN> _logger;
         private readonly IMapper _mapper;
         private readonly IConfiguracionLN _configuracion;
+        private readonly IVerificacionCorreoLN _verificacion;
+        private readonly IEnvioCorreo _envioCorreo;
 
         public UsuarioLN(
             IUnidadTrabajoEF unidadTrabajo,
             ILogger<UsuarioLN> logger,
             IMapper mapper,
-            IConfiguracionLN configuracion)
+            IConfiguracionLN configuracion,
+            IVerificacionCorreoLN verificacion,
+            IEnvioCorreo envioCorreo)
         {
             _unidadDeTrabajo = unidadTrabajo;
             _logger = logger;
             _mapper = mapper;
             _configuracion = configuracion;
+            _verificacion = verificacion;
+            _envioCorreo = envioCorreo;
+        }
+
+        // ========== Registro, paso 1: enviar el código al correo ==========
+        public async Task<Respuesta<bool>> EnviarCodigoRegistroAsync(clsRegistro datos)
+        {
+            var resultado = new Respuesta<bool>();
+
+            try
+            {
+                // Se valida todo antes de mandar el correo, así el usuario corrige sus datos primero
+                string? error = await ValidarDatosRegistroAsync(datos);
+                if (error != null)
+                {
+                    resultado.Success = false;
+                    resultado.Error = error;
+                    return resultado;
+                }
+
+                var correo = datos.Correo.Trim().ToLower();
+                var (codigo, errorCodigo) = _verificacion.Generar(correo);
+
+                if (codigo == null)
+                {
+                    resultado.Success = false;
+                    resultado.Error = errorCodigo;
+                    return resultado;
+                }
+
+                bool enviado = await _envioCorreo.EnviarCodigoVerificacionAsync(
+                    correo, datos.NombreUsuario.Trim(), codigo, _verificacion.MinutosValidez);
+
+                if (!enviado)
+                {
+                    resultado.Success = false;
+                    resultado.Error = "No se pudo enviar el correo. Revisa la dirección e inténtalo de nuevo.";
+                    return resultado;
+                }
+
+                resultado.Data = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al enviar el código de registro a {Correo}", datos.Correo);
+                resultado.Success = false;
+                resultado.Error = ex.GetBaseException().Message;
+            }
+
+            return resultado;
         }
 
         // ========== Registro ==========
@@ -35,45 +89,24 @@ namespace Casino_LogicaNegocios.Implementaciones
 
             try
             {
-                // 1) Validaciones
-                var nombre = datos.NombreUsuario?.Trim() ?? "";
-                var correo = datos.Correo?.Trim().ToLower() ?? "";
-
-                if (nombre.Length < 3 || nombre.Length > 50)
+                // 1) Validaciones (las mismas del paso 1)
+                string? error = await ValidarDatosRegistroAsync(datos);
+                if (error != null)
                 {
                     resultado.Success = false;
-                    resultado.Error = "El nombre de usuario debe tener entre 3 y 50 caracteres.";
+                    resultado.Error = error;
                     return resultado;
                 }
 
-                if (!CorreoValido(correo))
+                var nombre = datos.NombreUsuario.Trim();
+                var correo = datos.Correo.Trim().ToLower();
+
+                // 2) El código que llegó al correo debe ser correcto
+                var (codigoValido, errorCodigo) = _verificacion.Verificar(correo, datos.Codigo);
+                if (!codigoValido)
                 {
                     resultado.Success = false;
-                    resultado.Error = "El correo no tiene un formato válido.";
-                    return resultado;
-                }
-
-                if (string.IsNullOrWhiteSpace(datos.Password) || datos.Password.Length < 6)
-                {
-                    resultado.Success = false;
-                    resultado.Error = "La contraseña debe tener al menos 6 caracteres.";
-                    return resultado;
-                }
-
-                // 2) ¿El correo ya existe?
-                var existe = await _unidadDeTrabajo.TUsuario.ContarAsync(x => x.Correo == correo);
-
-                if (!existe.Success)
-                {
-                    resultado.Success = false;
-                    resultado.Error = existe.Error;
-                    return resultado;
-                }
-
-                if (existe.Data > 0)
-                {
-                    resultado.Success = false;
-                    resultado.Error = "El correo ya está registrado.";
+                    resultado.Error = errorCodigo;
                     return resultado;
                 }
 
@@ -110,6 +143,54 @@ namespace Casino_LogicaNegocios.Implementaciones
             }
 
             return resultado;
+        }
+
+        // ========== Primer ingreso: mostrar la bienvenida una sola vez ==========
+        public async Task<bool> MarcarBienvenidaAsync(int idUsuario)
+        {
+            try
+            {
+                var usuario = await _unidadDeTrabajo.TUsuario.ObtenerEntidadAsync(x => x.IdUsuario == idUsuario);
+
+                if (!usuario.Success || usuario.Data == null || usuario.Data.BienvenidaVista)
+                    return false;
+
+                usuario.Data.BienvenidaVista = true;
+                var modificar = await _unidadDeTrabajo.TUsuario.ModificarAsync(usuario.Data);
+                return modificar.Success;
+            }
+            catch (Exception ex)
+            {
+                // Si falla, no se impide el login: solo no se muestra la bienvenida
+                _logger.LogError(ex, "Error al marcar la bienvenida del usuario {IdUsuario}", idUsuario);
+                return false;
+            }
+        }
+
+        // Devuelve el error o null si los datos del registro están bien
+        private async Task<string?> ValidarDatosRegistroAsync(clsRegistro datos)
+        {
+            var nombre = datos.NombreUsuario?.Trim() ?? "";
+            var correo = datos.Correo?.Trim().ToLower() ?? "";
+
+            if (nombre.Length < 3 || nombre.Length > 50)
+                return "El nombre de usuario debe tener entre 3 y 50 caracteres.";
+
+            if (!CorreoValido(correo))
+                return "El correo no tiene un formato válido.";
+
+            if (string.IsNullOrWhiteSpace(datos.Password) || datos.Password.Length < 6)
+                return "La contraseña debe tener al menos 6 caracteres.";
+
+            var existe = await _unidadDeTrabajo.TUsuario.ContarAsync(x => x.Correo == correo);
+
+            if (!existe.Success)
+                return existe.Error;
+
+            if (existe.Data > 0)
+                return "El correo ya está registrado.";
+
+            return null;
         }
 
         // ========== RG1: Login ==========

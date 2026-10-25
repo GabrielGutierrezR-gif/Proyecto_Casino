@@ -20,6 +20,14 @@ export interface Usuario {
 export interface Sesion {
   token: string;
   usuario: Usuario;
+  primerIngreso: boolean;     // la primera vez se muestra la bienvenida
+  fichasBienvenida: number;
+}
+
+export interface DatosRegistro {
+  nombreUsuario: string;
+  correo: string;
+  password: string;
 }
 
 export interface RespuestaAPI<T> {
@@ -54,12 +62,16 @@ export class AuthService {
     );
   }
 
-  // REGISTRO
-  registro(datos: {
-    nombreUsuario: string;
-    correo: string;
-    password: string;
-  }): Observable<RespuestaAPI<Sesion>> {
+  // REGISTRO, PASO 1: el servidor valida los datos y manda un código al correo
+  enviarCodigo(datos: DatosRegistro): Observable<RespuestaAPI<boolean>> {
+    return this.http.post<RespuestaAPI<boolean>>(
+      `${API_URL}/enviar-codigo`,
+      datos
+    );
+  }
+
+  // REGISTRO, PASO 2: con el código del correo se crea la cuenta
+  registro(datos: DatosRegistro & { codigo: string }): Observable<RespuestaAPI<Sesion>> {
 
     return this.http.post<RespuestaAPI<Sesion>>(
       `${API_URL}/registro`,
@@ -104,6 +116,18 @@ export class AuthService {
   iniciarSesion(sesion: Sesion): void {
     sessionStorage.setItem('token', sesion.token);
     this.guardarUsuario(sesion.usuario);
+
+    // El inicio muestra la bienvenida una sola vez
+    if (sesion.primerIngreso) {
+      sessionStorage.setItem('bienvenida', String(sesion.fichasBienvenida));
+    }
+  }
+
+  // Fichas del regalo de bienvenida pendiente de mostrar (null si ya se mostró)
+  tomarBienvenida(): number | null {
+    const fichas = sessionStorage.getItem('bienvenida');
+    sessionStorage.removeItem('bienvenida');
+    return fichas === null ? null : Number(fichas);
   }
 
   guardarUsuario(usuario: Usuario): void {
@@ -123,6 +147,7 @@ export class AuthService {
   cerrarSesion(): void {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('usuario');
+    sessionStorage.removeItem('bienvenida');
     this.usuarioActual.set(null);
 
     this.router.navigateByUrl('/login', { replaceUrl: true });

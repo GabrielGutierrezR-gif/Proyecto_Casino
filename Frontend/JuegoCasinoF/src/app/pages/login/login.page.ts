@@ -2,7 +2,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
   IonContent,
@@ -37,6 +37,7 @@ export class LoginPage {
   private authService = inject(AuthService);
   private router = inject(Router);
   private alertController = inject(AlertController);
+  private route = inject(ActivatedRoute);
 
   correo = signal('');
   password = signal('');
@@ -44,6 +45,14 @@ export class LoginPage {
   mensaje = signal('');
   esError = signal(false);
   cargando = signal(false);
+
+  // Al volver del registro se avisa que la cuenta ya está lista
+  ionViewWillEnter(): void {
+    if (this.route.snapshot.queryParamMap.get('registrado')) {
+      this.mensaje.set('¡Cuenta creada! Inicia sesión para recibir tu regalo de bienvenida.');
+      this.esError.set(false);
+    }
+  }
 
 
 async iniciarSesion() {

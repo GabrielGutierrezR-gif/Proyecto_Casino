@@ -9,5 +9,6 @@ namespace Casino_Dominio.Clases
         public string NombreUsuario { get; set; } = "";
         public string Correo { get; set; } = "";
         public string Password { get; set; } = "";
+        public string Codigo { get; set; } = "";       // código de 6 dígitos enviado al correo
     }
 }

@@ -13,7 +13,6 @@
 
         <div>
           <h1>CASINO</h1>
-          <span class="logo-subtitle">ROYAL</span>
         </div>
       </div>
 
@@ -94,7 +93,7 @@
         </p>
 
         <h2>
-          CASINO ROYAL
+          CASINO
         </h2>
 
         <p class="welcome-text">
@@ -182,6 +181,39 @@
       </div>
 
     </main>
+
+
+    <!-- BIENVENIDA (primer ingreso) -->
+    @if (fichasBienvenida() !== null) {
+      <div class="welcome-overlay" (click)="cerrarBienvenida()">
+        <div class="welcome-card" (click)="$event.stopPropagation()">
+
+          <span class="welcome-eyebrow">¡BIENVENIDO!</span>
+
+          <h2>{{ usuario()?.nombreUsuario }}</h2>
+
+          <p>
+            Gracias por unirte al Casino. Para que empieces a jugar,
+            te regalamos:
+          </p>
+
+          <img src="assets/fichas/fichas-mini.png" alt="" class="welcome-chips">
+
+          <div class="welcome-gift">
+            {{ fichasBienvenida() }} <span>FICHAS</span>
+          </div>
+
+          <p class="welcome-hint">
+            Úsalas en el Blackjack con tus amigos o prueba suerte en la Ruleta.
+          </p>
+
+          <ion-button expand="block" color="warning" (click)="cerrarBienvenida()">
+            ¡A JUGAR!
+          </ion-button>
+
+        </div>
+      </div>
+    }
 
 
     <footer class="bottom-bar">

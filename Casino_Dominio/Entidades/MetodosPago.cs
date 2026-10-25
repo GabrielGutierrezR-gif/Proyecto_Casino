@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Casino_Dominio.Entidades;
@@ -14,6 +14,8 @@ public partial class MetodosPago
     public string NumeroTarjeta { get; set; } = null!;
 
     public string NombreTitular { get; set; } = null!;
+
+    public bool Activo { get; set; } = true;
 
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 

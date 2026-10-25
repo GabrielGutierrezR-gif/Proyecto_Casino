@@ -229,3 +229,47 @@ ion-content {
     max-width: 450px;
   }
 }
+
+
+/* =========================================
+   PASO 2: CÓDIGO DE VERIFICACIÓN
+========================================= */
+
+.codigo-mensaje {
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.codigo-ayuda {
+  margin: 0 0 16px;
+  color: #9a9a9a;
+  font-size: 13px;
+  text-align: center;
+}
+
+.codigo-input {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 8px;
+}
+
+.codigo-acciones {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.codigo-acciones button {
+  padding: 0;
+  color: #f5c451;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.codigo-acciones button:disabled {
+  color: #6f6f6f;
+  cursor: default;
+}

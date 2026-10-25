@@ -3,8 +3,8 @@
 
     <header class="purchase-header">
       <div>
-        <span class="brand">CASINO ROYAL</span>
-        <p>ROYAL CLUB</p>
+        <span class="brand">CASINO</span>
+        <p>TIENDA DE FICHAS</p>
       </div>
 
       <div class="header-actions">
@@ -20,7 +20,7 @@
     </header>
 
     <section class="purchase-content">
-      <span class="eyebrow">TU EXPERIENCIA ROYAL</span>
+      <span class="eyebrow">TU EXPERIENCIA DE JUEGO</span>
       <h1>Compra de fichas</h1>
       <p class="description">
         Prepárate para disfrutar tus partidas de Blackjack y Ruleta.
@@ -43,7 +43,7 @@
               <img src="assets/fichas/fichas-mini.png" alt="" class="package-image">
               <strong>{{ paquete.nombre }}</strong>
               <span class="package-chips">{{ paquete.cantidadFichas }} fichas</span>
-              <span class="package-price">${{ paquete.precio | number:'1.2-2' }}</span>
+              <span class="package-price">₡{{ paquete.precio | number:'1.2-2' }}</span>
             </button>
           } @empty {
             <p class="description">No hay paquetes disponibles.</p>
@@ -55,15 +55,26 @@
 
         <div class="cards">
           @for (metodo of metodos(); track metodo.idMetodoPago) {
-            <button
-              type="button"
-              class="card-option"
-              [class.selected]="metodoSeleccionado() === metodo.idMetodoPago"
-              (click)="metodoSeleccionado.set(metodo.idMetodoPago)">
-              <span class="card-type">{{ metodo.tipoTarjeta === 'Credito' ? 'Crédito' : 'Débito' }}</span>
-              <strong>{{ metodo.numeroEnmascarado }}</strong>
-              <small>{{ metodo.nombreTitular }}</small>
-            </button>
+            <div class="card-wrapper">
+              <button
+                type="button"
+                class="card-option"
+                [class.selected]="metodoSeleccionado() === metodo.idMetodoPago"
+                (click)="metodoSeleccionado.set(metodo.idMetodoPago)">
+                <span class="card-type">{{ metodo.tipoTarjeta === 'Credito' ? 'Crédito' : 'Débito' }}</span>
+                <strong>{{ metodo.numeroEnmascarado }}</strong>
+                <small>{{ metodo.nombreTitular }}</small>
+              </button>
+
+              <button
+                type="button"
+                class="delete-card"
+                title="Eliminar tarjeta"
+                aria-label="Eliminar tarjeta"
+                (click)="eliminarTarjeta(metodo, $event)">
+                ✕
+              </button>
+            </div>
           }
 
           @if (!mostrarFormulario()) {
@@ -101,20 +112,22 @@
               label="Número de tarjeta"
               labelPlacement="stacked"
               fill="outline"
+              type="text"
               inputmode="numeric"
               autocomplete="off"
               placeholder="0000 0000 0000 0000"
-              [ngModel]="numeroTarjeta()"
-              (ngModelChange)="formatearNumero($event)">
+              [value]="numeroTarjeta()"
+              (ionInput)="formatearNumero($event)">
             </ion-input>
 
             <ion-input
               label="Nombre del titular"
               labelPlacement="stacked"
               fill="outline"
-              maxlength="100"
+              autocomplete="off"
               placeholder="Como aparece en la tarjeta"
-              [(ngModel)]="nombreTitular">
+              [value]="nombreTitular()"
+              (ionInput)="formatearTitular($event)">
             </ion-input>
 
             @if (mensajeTarjeta()) {
@@ -154,7 +167,7 @@
           @if (comprando()) {
             Procesando compra...
           } @else if (paqueteActual()) {
-            Comprar {{ paqueteActual()!.cantidadFichas }} fichas por ${{ paqueteActual()!.precio | number:'1.2-2' }}
+            Comprar {{ paqueteActual()!.cantidadFichas }} fichas por ₡{{ paqueteActual()!.precio | number:'1.2-2' }}
           } @else {
             Comprar
           }

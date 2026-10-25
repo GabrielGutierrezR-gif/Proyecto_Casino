@@ -13,5 +13,6 @@ namespace Casino_Dominio.EntidadesTipadas
         public decimal SaldoFichas { get; set; }
         public DateTime FechaRegistro { get; set; }
         public string Rol { get; set; } = null!;
+        public bool BienvenidaVista { get; set; }
     }
 }

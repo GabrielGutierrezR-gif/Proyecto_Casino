@@ -56,6 +56,11 @@ export class ComprasService {
     return this.http.post<RespuestaAPI<MetodoPago>>(`${COMPRAS_URL}/metodos`, datos);
   }
 
+  // La tarjeta se oculta; las compras hechas con ella siguen en el historial
+  eliminarMetodo(idMetodoPago: number): Observable<RespuestaAPI<boolean>> {
+    return this.http.delete<RespuestaAPI<boolean>>(`${COMPRAS_URL}/metodos/${idMetodoPago}`);
+  }
+
   comprar(idPaquete: number, idMetodoPago: number): Observable<RespuestaAPI<CompraResultado>> {
     return this.http.post<RespuestaAPI<CompraResultado>>(COMPRAS_URL, { idPaquete, idMetodoPago });
   }

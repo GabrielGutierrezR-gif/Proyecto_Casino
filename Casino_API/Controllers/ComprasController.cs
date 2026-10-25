@@ -1,4 +1,4 @@
-﻿using Casino_Dominio.Clases;
+using Casino_Dominio.Clases;
 using Casino_Dominio.InterfacesLN;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +42,14 @@ namespace Casino_API.Controllers
         public async Task<IActionResult> AgregarMetodo([FromBody] clsMetodoPagoRequest datos)
         {
             var respuesta = await _compraLN.AgregarMetodoPagoAsync(IdUsuario, datos);
+            return respuesta.Success ? Ok(respuesta) : BadRequest(respuesta);
+        }
+
+        // DELETE api/compras/metodos/5 → eliminar una de mis tarjetas
+        [HttpDelete("metodos/{idMetodoPago:int}")]
+        public async Task<IActionResult> EliminarMetodo(int idMetodoPago)
+        {
+            var respuesta = await _compraLN.EliminarMetodoPagoAsync(IdUsuario, idMetodoPago);
             return respuesta.Success ? Ok(respuesta) : BadRequest(respuesta);
         }
 

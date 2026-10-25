@@ -19,6 +19,8 @@ public partial class Usuario
 
     public string Rol { get; set; } = null!;
 
+    public bool BienvenidaVista { get; set; }
+
     public virtual ICollection<ApuestasBlackjack> ApuestasBlackjacks { get; set; } = new List<ApuestasBlackjack>();
 
     public virtual ICollection<ApuestasRuletum> ApuestasRuleta { get; set; } = new List<ApuestasRuletum>();

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Casino_Dominio.Clases;
 using Casino_Dominio.Entidades;
 using Casino_Dominio.EntidadesTipadas;
@@ -68,17 +68,17 @@ namespace Casino_LogicaNegocios.Implementaciones
                     return resultado;
                 }
 
-                if (numero.Length < 13 || numero.Length > 19)
+                if (numero.Length != 16)
                 {
                     resultado.Success = false;
-                    resultado.Error = "El número de tarjeta debe tener entre 13 y 19 dígitos.";
+                    resultado.Error = "El número de tarjeta debe tener 16 dígitos.";
                     return resultado;
                 }
 
-                if (titular.Length == 0 || titular.Length > 100)
+                if (titular.Length == 0 || titular.Length > 50)
                 {
                     resultado.Success = false;
-                    resultado.Error = "El nombre del titular es obligatorio (máximo 100 caracteres).";
+                    resultado.Error = "El nombre del titular es obligatorio (máximo 50 caracteres).";
                     return resultado;
                 }
 
@@ -118,9 +118,9 @@ namespace Casino_LogicaNegocios.Implementaciones
 
             try
             {
-                // Solo las tarjetas de ESTE usuario
+                // Solo las tarjetas de ESTE usuario que no haya eliminado
                 var respuestaRepositorio =
-                    await _unidadDeTrabajo.TMetodosPago.BuscarAsync(x => x.IdUsuario == idUsuario);
+                    await _unidadDeTrabajo.TMetodosPago.BuscarAsync(x => x.IdUsuario == idUsuario && x.Activo);
 
                 if (!respuestaRepositorio.Success)
                 {
@@ -134,6 +134,45 @@ namespace Casino_LogicaNegocios.Implementaciones
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al listar métodos de pago del usuario {IdUsuario}", idUsuario);
+                resultado.Success = false;
+                resultado.Error = ex.GetBaseException().Message;
+            }
+
+            return resultado;
+        }
+
+        // Eliminar tarjeta: se oculta (Activo = 0) para no perder el historial de compras hechas con ella
+        public async Task<Respuesta<bool>> EliminarMetodoPagoAsync(int idUsuario, int idMetodoPago)
+        {
+            var resultado = new Respuesta<bool>();
+
+            try
+            {
+                var metodo = await _unidadDeTrabajo.TMetodosPago
+                    .ObtenerEntidadAsync(x => x.IdMetodoPago == idMetodoPago && x.IdUsuario == idUsuario && x.Activo);
+
+                if (!metodo.Success || metodo.Data == null)
+                {
+                    resultado.Success = false;
+                    resultado.Error = "El método de pago no existe o no te pertenece.";
+                    return resultado;
+                }
+
+                metodo.Data.Activo = false;
+                var respuestaRepositorio = await _unidadDeTrabajo.TMetodosPago.ModificarAsync(metodo.Data);
+
+                if (!respuestaRepositorio.Success)
+                {
+                    resultado.Success = false;
+                    resultado.Error = respuestaRepositorio.Error;
+                    return resultado;
+                }
+
+                resultado.Data = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar el método de pago {IdMetodoPago}", idMetodoPago);
                 resultado.Success = false;
                 resultado.Error = ex.GetBaseException().Message;
             }
@@ -161,7 +200,7 @@ namespace Casino_LogicaNegocios.Implementaciones
 
                 // 2) ¿La tarjeta existe y es de ESTE usuario? (que nadie pague con tarjeta ajena)
                 var metodo = await _unidadDeTrabajo.TMetodosPago
-                    .ObtenerEntidadAsync(x => x.IdMetodoPago == datos.IdMetodoPago && x.IdUsuario == idUsuario);
+                    .ObtenerEntidadAsync(x => x.IdMetodoPago == datos.IdMetodoPago && x.IdUsuario == idUsuario && x.Activo);
 
                 if (!metodo.Success || metodo.Data == null)
                 {

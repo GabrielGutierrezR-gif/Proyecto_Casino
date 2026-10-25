@@ -73,11 +73,10 @@ export class MesaPage {
   // ================================
 
   fichas: Ficha[] = [
-    { valor: 5, imagen: 'assets/fichas/fichaBlanca.png' },
-    { valor: 10, imagen: 'assets/fichas/fichaAzul.png' },
-    { valor: 25, imagen: 'assets/fichas/fichaRoja.png' },
-    { valor: 50, imagen: 'assets/fichas/fichaVerde.jpg' },
-    { valor: 100, imagen: 'assets/fichas/fichaDorada.png' }
+    { valor: 10, imagen: 'assets/fichas/Azul.png' },
+    { valor: 25, imagen: 'assets/fichas/Verde.png' },
+    { valor: 50, imagen: 'assets/fichas/Negro.png' },
+    { valor: 100, imagen: 'assets/fichas/Amarillo.png' }
   ];
 
 

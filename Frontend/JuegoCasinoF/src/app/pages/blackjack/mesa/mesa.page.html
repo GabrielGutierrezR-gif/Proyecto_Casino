@@ -138,7 +138,7 @@
                   </div>
                   <div class="other-info">
                     @if (mano.cartas.length > 0) { {{ mano.puntuacion }} pts · }
-                    🪙 {{ mano.apuesta }}
+                    <img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas"> {{ mano.apuesta }}
                     @if (mano.estado !== 'Jugando') { · {{ mano.estado }} }
                   </div>
                 } @empty {
@@ -205,13 +205,13 @@
 
           <div class="info-box">
             <span class="info-label">SALDO</span>
-            <span class="info-value">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+            <span class="info-value"><img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas"> {{ usuario()?.saldoFichas ?? 0 }}</span>
           </div>
 
           <div class="info-box bet-box">
             <span class="info-label">APUESTA</span>
             <span class="info-value">
-              🪙
+              <img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas">
               @if (yo()?.yaAposto) {
                 {{ manoEnTurno()?.apuesta ?? yo()?.manos?.[0]?.apuesta ?? 0 }}
               } @else {

@@ -147,7 +147,33 @@ ion-content {
 
 .balance-icon {
 
-  font-size: 24px;
+  width: 50px;
+
+  height: 30px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+}
+
+
+.balance > div {
+
+  flex-shrink: 0;
+
+  white-space: nowrap;
+}
+
+
+.purchase-icon {
+
+  width: 36px;
+
+  height: 22px;
+
+  margin-right: 6px;
+
+  object-fit: contain;
 }
 
 
@@ -410,9 +436,13 @@ ion-content {
 
 .game-icon {
 
-  min-width: 70px;
+  width: 80px;
 
-  height: 70px;
+  min-width: 80px;
+
+  height: 80px;
+
+  flex-shrink: 0;
 
   display: flex;
 
@@ -434,9 +464,17 @@ ion-content {
 }
 
 
-.game-icon.roulette {
+.game-icon img {
 
-  font-size: 55px;
+  width: 100%;
+
+  height: 100%;
+
+  padding: 6px;
+
+  box-sizing: border-box;
+
+  object-fit: contain;
 }
 
 
@@ -620,9 +658,11 @@ ion-content {
 
   .game-icon {
 
-    min-width: 55px;
+    width: 60px;
 
-    height: 55px;
+    min-width: 60px;
+
+    height: 60px;
 
     font-size: 38px;
   }

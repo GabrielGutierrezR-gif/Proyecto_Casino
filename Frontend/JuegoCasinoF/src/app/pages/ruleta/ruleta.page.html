@@ -11,7 +11,7 @@
       </div>
 
       <div class="header-right">
-        <span class="balance-pill">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+        <span class="balance-pill"><img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas"> {{ usuario()?.saldoFichas ?? 0 }}</span>
 
         <a routerLink="/home" class="back-link">
           ← Volver al casino
@@ -195,7 +195,7 @@
         <div class="board-actions">
           <div class="total">
             <span>TOTAL APOSTADO</span>
-            <strong>🪙 {{ totalApostado() }}</strong>
+            <strong><img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas"> {{ totalApostado() }}</strong>
           </div>
 
           <ion-button

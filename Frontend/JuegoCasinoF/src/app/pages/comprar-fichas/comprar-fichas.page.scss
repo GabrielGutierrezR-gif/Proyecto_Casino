@@ -80,8 +80,11 @@ ion-content {
   text-align: left;
 }
 
-.chip-icon {
-  font-size: 40px;
+.package-image {
+  width: 150px;
+  height: 86px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.6));
 }
 
 /* PAQUETES */

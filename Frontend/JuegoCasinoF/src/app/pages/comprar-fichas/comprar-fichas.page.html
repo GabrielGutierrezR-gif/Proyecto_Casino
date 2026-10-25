@@ -8,7 +8,7 @@
       </div>
 
       <div class="header-actions">
-        <span class="balance-pill">🪙 {{ usuario()?.saldoFichas ?? 0 }}</span>
+        <span class="balance-pill"><img src="assets/fichas/fichas-mini.png" alt="" class="icono-fichas"> {{ usuario()?.saldoFichas ?? 0 }}</span>
 
         <ion-button
           fill="outline"
@@ -40,7 +40,7 @@
               class="package-card"
               [class.selected]="paqueteSeleccionado() === paquete.idPaquete"
               (click)="paqueteSeleccionado.set(paquete.idPaquete)">
-              <span class="chip-icon">💰</span>
+              <img src="assets/fichas/fichas-mini.png" alt="" class="package-image">
               <strong>{{ paquete.nombre }}</strong>
               <span class="package-chips">{{ paquete.cantidadFichas }} fichas</span>
               <span class="package-price">${{ paquete.precio | number:'1.2-2' }}</span>

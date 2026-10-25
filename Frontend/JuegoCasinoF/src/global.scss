@@ -35,3 +35,12 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Imagen de fichas que acompaña a los saldos y apuestas (ruleta, mesa y compra) */
+.icono-fichas {
+  width: 2em;
+  height: 1.2em;
+  margin-right: 4px;
+  object-fit: contain;
+  vertical-align: middle;
+}

@@ -1,8 +1,9 @@
-// Fijo en la esquina, encima de todas las pantallas
+// Fijo en la esquina, encima de todas las pantallas.
+// Se suma el área segura (muesca de la cámara, barra de gestos) igual que en global.scss.
 :host {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  left: calc(16px + var(--ion-safe-area-left, 0px) / var(--zoom-app, 1));
+  bottom: calc(16px + var(--ion-safe-area-bottom, 0px) / var(--zoom-app, 1));
   z-index: 9999;
 }
 

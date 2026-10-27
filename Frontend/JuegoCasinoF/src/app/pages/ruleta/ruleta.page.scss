@@ -582,6 +582,11 @@ ion-button {
     gap: 12px;
   }
 
+  // Más chica para dejar lugar a la barra de estado del celular
+  .wheel-wrapper {
+    max-width: 290px;
+  }
+
   .board-section {
     gap: 10px;
   }

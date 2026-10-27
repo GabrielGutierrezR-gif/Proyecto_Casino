@@ -172,7 +172,9 @@ app.UseSwaggerUI();
 // CORS debe ejecutarse antes de autenticación y autorización.
 app.UseCors("FrontendCasino");
 
-app.UseHttpsRedirection();
+// En desarrollo el celular entra por http (IP local); en producción se fuerza https
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

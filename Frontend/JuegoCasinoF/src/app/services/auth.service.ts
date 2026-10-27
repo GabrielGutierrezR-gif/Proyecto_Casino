@@ -108,7 +108,7 @@ export class AuthService {
   // ================================
 
   get token(): string | null {
-    return sessionStorage.getItem('token');
+    return localStorage.getItem('token');
   }
 
   estaLogueado(): boolean {
@@ -116,7 +116,7 @@ export class AuthService {
   }
 
   iniciarSesion(sesion: Sesion): void {
-    sessionStorage.setItem('token', sesion.token);
+    localStorage.setItem('token', sesion.token);
     this.guardarUsuario(sesion.usuario);
 
     // El inicio muestra la bienvenida una sola vez
@@ -133,7 +133,7 @@ export class AuthService {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    sessionStorage.setItem('usuario', JSON.stringify(usuario));
+    localStorage.setItem('usuario', JSON.stringify(usuario));
     this.usuarioActual.set(usuario);
   }
 
@@ -148,8 +148,8 @@ export class AuthService {
 
   // motivo: si viene, se muestra un aviso arriba (ej. "Se inició sesión en otro dispositivo")
   cerrarSesion(motivo?: string): void {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('usuario');
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
     sessionStorage.removeItem('bienvenida');
     this.usuarioActual.set(null);
 
@@ -163,7 +163,7 @@ export class AuthService {
   }
 
   private leerUsuarioGuardado(): Usuario | null {
-    const guardado = sessionStorage.getItem('usuario');
+    const guardado = localStorage.getItem('usuario');
 
     if (!guardado) {
       return null;
@@ -172,7 +172,7 @@ export class AuthService {
     try {
       return JSON.parse(guardado) as Usuario;
     } catch {
-      sessionStorage.removeItem('usuario');
+      localStorage.removeItem('usuario');
       return null;
     }
   }

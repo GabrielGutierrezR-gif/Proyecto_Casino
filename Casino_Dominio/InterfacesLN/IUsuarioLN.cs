@@ -19,5 +19,8 @@ namespace Casino_Dominio.InterfacesLN
 		Task<Respuesta<clsPerfilUsuario>> ActualizarNombreUsuarioAsync(
 	   int idUsuario,
 	   string nuevoNombre);
-	}
+
+        // Genera una sesión nueva: la del dispositivo anterior deja de valer
+        Task<Respuesta<Guid>> IniciarSesionUnicaAsync(int idUsuario);
+    }
 }

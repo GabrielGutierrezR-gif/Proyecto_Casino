@@ -200,6 +200,12 @@ export class BlackjackHubService {
       this.authService.actualizarSaldo(saldo);
     });
 
+    // Se inició sesión con esta cuenta en otro teléfono: este sale de la mesa y vuelve al login
+    this.conexion.on('SesionCerrada', async (mensaje: string) => {
+      await this.desconectar();
+      this.authService.cerrarSesion(mensaje);
+    });
+
     this.conexion.onreconnecting(() => this.conectado.set(false));
 
     // Al reconectar el servidor da una conexión nueva: hay que volver a sentarse

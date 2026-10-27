@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { ToastController } from '@ionic/angular';
 
 const API_URL = `${environment.apiUrl}/Auth`;
 const USUARIOS_URL = `${environment.apiUrl}/Usuarios`;
@@ -43,6 +44,7 @@ export class AuthService {
 
   private http = inject(HttpClient);
   private router = inject(Router);
+  private toastController = inject(ToastController);
 
   // Usuario logueado, compartido por todas las pantallas (el saldo se ve igual en todas)
   private usuarioActual = signal<Usuario | null>(this.leerUsuarioGuardado());
@@ -144,13 +146,20 @@ export class AuthService {
     }
   }
 
-  cerrarSesion(): void {
+  // motivo: si viene, se muestra un aviso arriba (ej. "Se inició sesión en otro dispositivo")
+  cerrarSesion(motivo?: string): void {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('usuario');
     sessionStorage.removeItem('bienvenida');
     this.usuarioActual.set(null);
 
     this.router.navigateByUrl('/login', { replaceUrl: true });
+
+    if (motivo) {
+      this.toastController
+        .create({ message: motivo, duration: 4000, color: 'warning', position: 'top' })
+        .then(toast => toast.present());
+    }
   }
 
   private leerUsuarioGuardado(): Usuario | null {

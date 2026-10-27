@@ -235,6 +235,35 @@ namespace Casino_LogicaNegocios.Implementaciones
             return resultado;
         }
 
+        // ========== Una sola sesión por cuenta ==========
+        public async Task<Respuesta<Guid>> IniciarSesionUnicaAsync(int idUsuario)
+        {
+            try
+            {
+                var usuario = await _unidadDeTrabajo.TUsuario.ObtenerEntidadAsync(x => x.IdUsuario == idUsuario);
+
+                if (!usuario.Success || usuario.Data == null)
+                    return Respuesta<Guid>.Fail("Usuario no encontrado.");
+
+                // Código nuevo: el token del otro teléfono queda con el código viejo
+                var sesion = Guid.NewGuid();
+                usuario.Data.SesionActual = sesion;
+
+                var modificar = await _unidadDeTrabajo.TUsuario.ModificarAsync(usuario.Data);
+                if (!modificar.Success)
+                    return Respuesta<Guid>.Fail(modificar.Error);
+
+                return Respuesta<Guid>.Ok(sesion);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al iniciar sesión del usuario {IdUsuario}", idUsuario);
+                return Respuesta<Guid>.Fail(ex.GetBaseException().Message);
+            }
+        }
+
+
+
         // ========== RG2: Perfil y saldo ==========
         public async Task<Respuesta<clsPerfilUsuario>> ObtenerPerfilAsync(int idUsuario)
         {

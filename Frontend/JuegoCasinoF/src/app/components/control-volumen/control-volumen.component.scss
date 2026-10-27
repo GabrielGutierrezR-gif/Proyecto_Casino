@@ -1,0 +1,38 @@
+// Fijo en la esquina, encima de todas las pantallas
+:host {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 9999;
+}
+
+.boton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #d4af37;
+  background: rgba(0, 0, 0, 0.75);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  bottom: 54px;
+  width: 200px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #d4af37;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  accent-color: #d4af37;
+}

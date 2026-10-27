@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { IonContent, IonButton, AlertController } from '@ionic/angular';
 
 import { AuthService } from '../../../services/auth.service';
+import { AudioService } from '../../../services/audio.service';
 import {
   AccionBlackjack,
   BlackjackHubService,
@@ -44,6 +45,7 @@ export class MesaPage {
   private authService = inject(AuthService);
   private router = inject(Router);
   private alertController = inject(AlertController);
+  private sonido = inject(AudioService);
 
   // Viene de la ruta /blackjack/mesa/:idSala
   idSala = input.required<string>();
@@ -348,12 +350,9 @@ export class MesaPage {
         total + j.manos.reduce((suma, m) => suma + m.cartas.length, 0), 0);
   }
 
+  // Usa el volumen de efectos que eligió el usuario
   private reproducirSonido(nombre: string): void {
-    const audio = new Audio(`assets/sonidos/${nombre}`);
-    audio.volume = 0.6;
-
-    audio.play().catch(() => {
-      // El navegador bloquea el audio hasta que el usuario toca la pantalla
-    });
+    this.sonido.efecto(nombre);
   }
+  
 }

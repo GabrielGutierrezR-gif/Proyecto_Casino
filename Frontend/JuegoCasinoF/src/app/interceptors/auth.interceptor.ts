@@ -23,7 +23,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && esApi && !esLogin) {
-        authService.cerrarSesion();
+        authService.cerrarSesion('Tu sesión terminó: venció o se abrió en otro dispositivo.');
       }
 
       return throwError(() => error);

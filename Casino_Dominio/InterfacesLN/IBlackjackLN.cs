@@ -17,9 +17,6 @@ namespace Casino_Dominio.InterfacesLN
         // Apuesta inicial de la ronda (RB3)
         Task<Respuesta<bool>> ApostarAsync(int idSala, int idUsuario, decimal monto);
 
-        // Iniciar la ronda sin esperar a los que no apostaron
-        Task<Respuesta<bool>> IniciarRondaAsync(int idSala, int idUsuario);
-
         // Pedir, Plantarse, Doblar, Dividir (RB3)
         Task<Respuesta<bool>> AccionAsync(int idSala, int idUsuario, string accion);
 

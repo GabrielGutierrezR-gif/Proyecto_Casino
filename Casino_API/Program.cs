@@ -107,20 +107,31 @@ builder.Services
 				return Task.CompletedTask;
 			},
 
-			// Si el usuario del token ya no existe en la BD (lo borraron), la sesión deja de valer:
-			// la API responde 401 y la app vuelve al login.
-			OnTokenValidated = async contexto =>
-			{
-				var sub = contexto.Principal?.FindFirst("sub")?.Value;
-				var bd = contexto.HttpContext.RequestServices.GetRequiredService<CasinoContext>();
+            // En cada petición: el usuario debe existir y el token debe ser de su sesión ACTIVA.
+            // Si inició sesión en otro teléfono, este token ya no vale → 401 → la app vuelve al login.
+            OnTokenValidated = async contexto =>
+            {
+                var sub = contexto.Principal?.FindFirst("sub")?.Value;
+                var sid = contexto.Principal?.FindFirst("sid")?.Value;
+                var bd = contexto.HttpContext.RequestServices.GetRequiredService<CasinoContext>();
 
-				if (!int.TryParse(sub, out int idUsuario) ||
-					!await bd.Usuarios.AnyAsync(u => u.IdUsuario == idUsuario))
-				{
-					contexto.Fail("El usuario ya no existe.");
-				}
-			}
-		};
+                if (!int.TryParse(sub, out int idUsuario))
+                {
+                    contexto.Fail("Token inválido.");
+                    return;
+                }
+
+                var usuario = await bd.Usuarios
+                    .Where(u => u.IdUsuario == idUsuario)
+                    .Select(u => new { u.SesionActual })
+                    .FirstOrDefaultAsync();
+
+                if (usuario == null)
+                    contexto.Fail("El usuario ya no existe.");
+                else if (usuario.SesionActual?.ToString() != sid)
+                    contexto.Fail("La sesión se abrió en otro dispositivo.");
+            }
+        };
 	});
 
 builder.Services.AddAuthorization();
@@ -161,7 +172,9 @@ app.UseSwaggerUI();
 // CORS debe ejecutarse antes de autenticación y autorización.
 app.UseCors("FrontendCasino");
 
-app.UseHttpsRedirection();
+// En desarrollo el celular entra por http (IP local); en producción se fuerza https
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

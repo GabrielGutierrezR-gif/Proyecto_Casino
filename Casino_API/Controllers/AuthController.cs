@@ -1,8 +1,10 @@
-﻿using Casino_API.Servicios;
+﻿using Casino_API.Hubs;
+using Casino_API.Servicios;
 using Casino_Dominio.Clases;
 using Casino_Dominio.InterfacesLN;
 using Casino_Utilitarios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Casino_API.Controllers
 {
@@ -14,12 +16,14 @@ namespace Casino_API.Controllers
     {
         private readonly IUsuarioLN _usuarioLN;
         private readonly TokenService _tokenService;
+        private readonly IHubContext<BlackjackHub> _hub;
 
-        // La API inyecta la lógica de usuarios y el generador de tokens (registrados en Program.cs)
-        public AuthController(IUsuarioLN usuarioLN, TokenService tokenService)
+        // La API inyecta la lógica de usuarios, el generador de tokens y el Hub (registrados en Program.cs)
+        public AuthController(IUsuarioLN usuarioLN, TokenService tokenService, IHubContext<BlackjackHub> hub)
         {
             _usuarioLN = usuarioLN;
             _tokenService = tokenService;
+            _hub = hub;
         }
 
         // POST api/auth/enviar-codigo
@@ -32,19 +36,18 @@ namespace Casino_API.Controllers
         }
 
         // POST api/auth/registro   (RG1 + RG2)
-        // Paso 2: con el código del correo se crea la cuenta
-        // Crea la cuenta, le da las fichas de bienvenida y devuelve el token
+        // Paso 2: con el código del correo se crea la cuenta, con las fichas de bienvenida
         [HttpPost("registro")]
         public async Task<IActionResult> Registro([FromBody] clsRegistro datos)
         {
             var respuesta = await _usuarioLN.RegistrarAsync(datos);
 
-            // 400: datos inválidos o correo ya registrado
+            // 400: datos inválidos, código incorrecto o correo ya registrado
             if (!respuesta.Success || respuesta.Data == null)
                 return BadRequest(respuesta);
 
             // 200: usuario creado, ya queda con sesión iniciada
-            return Ok(CrearSesion(respuesta.Data));
+            return await CrearSesionAsync(respuesta.Data);
         }
 
         // POST api/auth/login   (RG1)
@@ -58,23 +61,34 @@ namespace Casino_API.Controllers
             if (!respuesta.Success || respuesta.Data == null)
                 return Unauthorized(respuesta);
 
-            // 200: login correcto. La primera vez la app muestra la bienvenida y el regalo de fichas
+            // La primera vez la app muestra la bienvenida y el regalo de fichas
             bool primerIngreso = await _usuarioLN.MarcarBienvenidaAsync(respuesta.Data.IdUsuario);
-            return Ok(CrearSesion(respuesta.Data, primerIngreso));
+            return await CrearSesionAsync(respuesta.Data, primerIngreso);
         }
 
-        // Arma la respuesta con el token JWT + los datos del perfil.
+        // Crea una sesión NUEVA (la del otro dispositivo deja de valer) y arma la respuesta con el token.
         // La app guarda el token y lo envía en las siguientes peticiones (RNF6).
-        private Respuesta<clsSesion> CrearSesion(clsPerfilUsuario usuario, bool primerIngreso = false)
+        private async Task<IActionResult> CrearSesionAsync(clsPerfilUsuario usuario, bool primerIngreso = false)
         {
-            return Respuesta<clsSesion>.Ok(new clsSesion
+            // 1) Código de sesión nuevo guardado en la BD
+            var sesion = await _usuarioLN.IniciarSesionUnicaAsync(usuario.IdUsuario);
+
+            if (!sesion.Success)
+                return BadRequest(Respuesta<clsSesion>.Fail(sesion.Error));
+
+            // 2) Si el otro teléfono estaba en una mesa de Blackjack, se le avisa al instante
+            await _hub.Clients.User(usuario.IdUsuario.ToString())
+                .SendAsync("SesionCerrada", "Se inició sesión con tu cuenta en otro dispositivo.");
+
+            // 3) Token con el código de sesión adentro
+            return Ok(Respuesta<clsSesion>.Ok(new clsSesion
             {
-                Token = _tokenService.GenerarToken(usuario),
+                Token = _tokenService.GenerarToken(usuario, sesion.Data),
                 Usuario = usuario,
                 PrimerIngreso = primerIngreso,
                 // En el primer ingreso el saldo es justo el regalo de bienvenida
                 FichasBienvenida = primerIngreso ? (int)usuario.SaldoFichas : 0
-            });
+            }));
         }
     }
 }

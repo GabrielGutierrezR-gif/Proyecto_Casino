@@ -16,7 +16,7 @@ namespace Casino_API.Servicios
             _config = config;
         }
 
-        public string GenerarToken(clsPerfilUsuario usuario)
+        public string GenerarToken(clsPerfilUsuario usuario, Guid sesion)
         {
             var clave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             int dias = int.Parse(_config["Jwt:DiasExpiracion"] ?? "7");
@@ -27,7 +27,8 @@ namespace Casino_API.Servicios
                 new Claim("sub", usuario.IdUsuario.ToString()),
                 new Claim("name", usuario.NombreUsuario),
                 new Claim("email", usuario.Correo),
-                new Claim("role", usuario.Rol)
+                new Claim("role", usuario.Rol),
+                new Claim("sid", sesion.ToString()),
             };
 
             var descriptor = new SecurityTokenDescriptor

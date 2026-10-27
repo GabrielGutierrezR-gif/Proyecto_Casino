@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { IonContent, IonButton, AlertController } from '@ionic/angular';
 
 import { AuthService } from '../../../services/auth.service';
+import { AudioService } from '../../../services/audio.service';
 import {
   AccionBlackjack,
   BlackjackHubService,
@@ -44,6 +45,7 @@ export class MesaPage {
   private authService = inject(AuthService);
   private router = inject(Router);
   private alertController = inject(AlertController);
+  private sonido = inject(AudioService);
 
   // Viene de la ruta /blackjack/mesa/:idSala
   idSala = input.required<string>();
@@ -106,7 +108,6 @@ export class MesaPage {
     return estado?.jugadores.find(j => j.idUsuario === estado.turnoIdUsuario)?.nombre ?? '';
   });
 
-  alguienAposto = computed(() => this.estado()?.jugadores.some(j => j.yaAposto) ?? false);
 
   // Resultados de MIS manos en la última ronda
   misResultados = computed(() => {
@@ -222,9 +223,6 @@ export class MesaPage {
     }
   }
 
-  iniciarRonda(): Promise<void> {
-    return this.ejecutar(() => this.hub.iniciarRonda());
-  }
 
 
   // ================================
@@ -329,7 +327,8 @@ export class MesaPage {
   }
 
   private actualizarReloj(): void {
-    const fin = this.estado()?.finTurnoUtc;
+    // Turno en curso o, si no hay, el tiempo para apostar
+    const fin = this.estado()?.finTurnoUtc ?? this.estado()?.finApuestasUtc;
 
     if (!fin) {
       this.segundosRestantes.set(null);
@@ -351,12 +350,9 @@ export class MesaPage {
         total + j.manos.reduce((suma, m) => suma + m.cartas.length, 0), 0);
   }
 
+  // Usa el volumen de efectos que eligió el usuario
   private reproducirSonido(nombre: string): void {
-    const audio = new Audio(`assets/sonidos/${nombre}`);
-    audio.volume = 0.6;
-
-    audio.play().catch(() => {
-      // El navegador bloquea el audio hasta que el usuario toca la pantalla
-    });
+    this.sonido.efecto(nombre);
   }
+  
 }

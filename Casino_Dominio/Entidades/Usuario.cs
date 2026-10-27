@@ -21,6 +21,9 @@ public partial class Usuario
 
     public bool BienvenidaVista { get; set; }
 
+    // Sesión activa (una sola por cuenta). Si el token trae otro código, ya no vale.
+    public Guid? SesionActual { get; set; }
+
     public virtual ICollection<ApuestasBlackjack> ApuestasBlackjacks { get; set; } = new List<ApuestasBlackjack>();
 
     public virtual ICollection<ApuestasRuletum> ApuestasRuleta { get; set; } = new List<ApuestasRuletum>();

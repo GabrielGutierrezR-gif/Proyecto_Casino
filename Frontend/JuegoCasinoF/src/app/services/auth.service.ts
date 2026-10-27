@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { ToastController } from '@ionic/angular';
 
 const API_URL = `${environment.apiUrl}/Auth`;
 const USUARIOS_URL = `${environment.apiUrl}/Usuarios`;
@@ -43,6 +44,7 @@ export class AuthService {
 
   private http = inject(HttpClient);
   private router = inject(Router);
+  private toastController = inject(ToastController);
 
   // Usuario logueado, compartido por todas las pantallas (el saldo se ve igual en todas)
   private usuarioActual = signal<Usuario | null>(this.leerUsuarioGuardado());
@@ -106,7 +108,7 @@ export class AuthService {
   // ================================
 
   get token(): string | null {
-    return sessionStorage.getItem('token');
+    return localStorage.getItem('token');
   }
 
   estaLogueado(): boolean {
@@ -114,7 +116,7 @@ export class AuthService {
   }
 
   iniciarSesion(sesion: Sesion): void {
-    sessionStorage.setItem('token', sesion.token);
+    localStorage.setItem('token', sesion.token);
     this.guardarUsuario(sesion.usuario);
 
     // El inicio muestra la bienvenida una sola vez
@@ -131,7 +133,7 @@ export class AuthService {
   }
 
   guardarUsuario(usuario: Usuario): void {
-    sessionStorage.setItem('usuario', JSON.stringify(usuario));
+    localStorage.setItem('usuario', JSON.stringify(usuario));
     this.usuarioActual.set(usuario);
   }
 
@@ -144,17 +146,24 @@ export class AuthService {
     }
   }
 
-  cerrarSesion(): void {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('usuario');
+  // motivo: si viene, se muestra un aviso arriba (ej. "Se inició sesión en otro dispositivo")
+  cerrarSesion(motivo?: string): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
     sessionStorage.removeItem('bienvenida');
     this.usuarioActual.set(null);
 
     this.router.navigateByUrl('/login', { replaceUrl: true });
+
+    if (motivo) {
+      this.toastController
+        .create({ message: motivo, duration: 4000, color: 'warning', position: 'top' })
+        .then(toast => toast.present());
+    }
   }
 
   private leerUsuarioGuardado(): Usuario | null {
-    const guardado = sessionStorage.getItem('usuario');
+    const guardado = localStorage.getItem('usuario');
 
     if (!guardado) {
       return null;
@@ -163,7 +172,7 @@ export class AuthService {
     try {
       return JSON.parse(guardado) as Usuario;
     } catch {
-      sessionStorage.removeItem('usuario');
+      localStorage.removeItem('usuario');
       return null;
     }
   }

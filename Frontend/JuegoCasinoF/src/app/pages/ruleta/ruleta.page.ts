@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { IonContent, IonButton } from '@ionic/angular';
 
 import { AuthService } from '../../services/auth.service';
+import { AudioService } from '../../services/audio.service';
 import {
   ApuestaRuleta,
   GiroResultado,
@@ -48,6 +49,7 @@ export class RuletaPage {
 
   private ruletaService = inject(RuletaService);
   private authService = inject(AuthService);
+  private sonido = inject(AudioService);
 
   usuario = this.authService.usuario;
 
@@ -249,7 +251,10 @@ export class RuletaPage {
   private tono(frecuencia: number, inicio: number, duracion: number, volumen: number, tipo: OscillatorType = 'square'): void {
     const ctx = this.contexto();
 
-    if (!ctx) {
+    // Escala el tono según la barra de efectos (0.6 = volumen original)
+    volumen = volumen * this.sonido.volumenEfectos() / 0.6;
+
+    if (!ctx || volumen <= 0) {
       return;
     }
 

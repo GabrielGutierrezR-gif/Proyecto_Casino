@@ -1,0 +1,21 @@
+<button class="boton" (click)="abierto.set(!abierto())" aria-label="Volumen">
+  {{ audio.volumenMusica() === 0 && audio.volumenEfectos() === 0 ? '🔇' : '🔊' }}
+</button>
+
+@if (abierto()) {
+<div class="panel">
+  <label>
+    Música {{ porcentaje(audio.volumenMusica()) }}%
+    <input type="range" min="0" max="1" step="0.05"
+           [value]="audio.volumenMusica()"
+           (input)="audio.cambiarVolumenMusica(valor($event))">
+  </label>
+
+  <label>
+    Efectos {{ porcentaje(audio.volumenEfectos()) }}%
+    <input type="range" min="0" max="1" step="0.05"
+           [value]="audio.volumenEfectos()"
+           (input)="audio.cambiarVolumenEfectos(valor($event))">
+  </label>
+</div>
+}

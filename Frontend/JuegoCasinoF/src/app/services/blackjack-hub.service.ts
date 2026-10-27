@@ -48,6 +48,7 @@ export interface EstadoMesa {
   jugadores: JugadorMesa[];
   turnoIdUsuario: number | null;
   finTurnoUtc: string | null;
+  finApuestasUtc: string | null;
 }
 
 export interface ResultadoMano {
@@ -140,10 +141,6 @@ export class BlackjackHubService {
     return this.invocar('Apostar', monto);
   }
 
-  iniciarRonda(): Promise<RespuestaAPI<boolean>> {
-    return this.invocar('IniciarRonda');
-  }
-
   accion(accion: AccionBlackjack): Promise<RespuestaAPI<boolean>> {
     return this.invocar(accion);
   }
@@ -198,6 +195,12 @@ export class BlackjackHubService {
 
     this.conexion.on('SaldoActualizado', (saldo: number) => {
       this.authService.actualizarSaldo(saldo);
+    });
+
+    // Se inició sesión con esta cuenta en otro teléfono: este sale de la mesa y vuelve al login
+    this.conexion.on('SesionCerrada', async (mensaje: string) => {
+      await this.desconectar();
+      this.authService.cerrarSesion(mensaje);
     });
 
     this.conexion.onreconnecting(() => this.conectado.set(false));

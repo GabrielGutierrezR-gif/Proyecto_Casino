@@ -48,6 +48,7 @@ export interface EstadoMesa {
   jugadores: JugadorMesa[];
   turnoIdUsuario: number | null;
   finTurnoUtc: string | null;
+  finApuestasUtc: string | null;
 }
 
 export interface ResultadoMano {
@@ -138,10 +139,6 @@ export class BlackjackHubService {
 
   apostar(monto: number): Promise<RespuestaAPI<boolean>> {
     return this.invocar('Apostar', monto);
-  }
-
-  iniciarRonda(): Promise<RespuestaAPI<boolean>> {
-    return this.invocar('IniciarRonda');
   }
 
   accion(accion: AccionBlackjack): Promise<RespuestaAPI<boolean>> {

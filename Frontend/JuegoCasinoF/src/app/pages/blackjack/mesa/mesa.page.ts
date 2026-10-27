@@ -106,7 +106,6 @@ export class MesaPage {
     return estado?.jugadores.find(j => j.idUsuario === estado.turnoIdUsuario)?.nombre ?? '';
   });
 
-  alguienAposto = computed(() => this.estado()?.jugadores.some(j => j.yaAposto) ?? false);
 
   // Resultados de MIS manos en la última ronda
   misResultados = computed(() => {
@@ -222,9 +221,6 @@ export class MesaPage {
     }
   }
 
-  iniciarRonda(): Promise<void> {
-    return this.ejecutar(() => this.hub.iniciarRonda());
-  }
 
 
   // ================================
@@ -329,7 +325,8 @@ export class MesaPage {
   }
 
   private actualizarReloj(): void {
-    const fin = this.estado()?.finTurnoUtc;
+    // Turno en curso o, si no hay, el tiempo para apostar
+    const fin = this.estado()?.finTurnoUtc ?? this.estado()?.finApuestasUtc;
 
     if (!fin) {
       this.segundosRestantes.set(null);

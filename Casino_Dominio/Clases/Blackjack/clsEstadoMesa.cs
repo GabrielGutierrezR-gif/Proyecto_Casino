@@ -16,5 +16,6 @@ namespace Casino_Dominio.Clases
         public List<clsJugadorMesa> Jugadores { get; set; } = new();
         public int? TurnoIdUsuario { get; set; }             // a quién le toca (null si nadie)
         public DateTime? FinTurnoUtc { get; set; }           // para mostrar el contador de 30 s
+        public DateTime? FinApuestasUtc { get; set; }        // para mostrar "apuestas cierran en X s"
     }
 }

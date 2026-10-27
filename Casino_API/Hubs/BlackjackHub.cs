@@ -55,9 +55,6 @@ namespace Casino_API.Hubs
         public Task<Respuesta<bool>> Apostar(int idSala, decimal monto)
             => _blackjackLN.ApostarAsync(idSala, IdUsuario, monto);
 
-        public Task<Respuesta<bool>> IniciarRonda(int idSala)
-            => _blackjackLN.IniciarRondaAsync(idSala, IdUsuario);
-
         public Task<Respuesta<bool>> Pedir(int idSala)
             => _blackjackLN.AccionAsync(idSala, IdUsuario, "Pedir");
 

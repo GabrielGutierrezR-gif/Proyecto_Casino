@@ -137,6 +137,10 @@ namespace Casino_LogicaNegocios.Implementaciones
 
                 await QuitarJugadorAsync(mesa, jugador, sp);
 
+                // Si ya no queda ninguna apuesta en la mesa, el tiempo de apuestas se cancela
+                if (!mesa.Jugadores.Any(j => j.Manos.Count > 0))
+                    CancelarTemporizadorApuestas(mesa);
+
                 if (!mesa.Cerrada)
                     await _notificador.EnviarEstadoAsync(idSala, CrearEstado(mesa));
 
@@ -290,8 +294,17 @@ namespace Casino_LogicaNegocios.Implementaciones
                 await _notificador.EnviarMensajeAsync(idSala, $"{jugador.Nombre} apostó {monto} fichas.");
 
                 // Si ya apostaron todos los conectados, la ronda arranca sola
+                // Si no, la PRIMERA apuesta arranca el tiempo para que los demás apuesten.
                 if (mesa.TodosApostaron)
+                {
                     await IniciarRondaInternaAsync(mesa, sp);
+                }
+                else if (mesa.TemporizadorApuestas == null)
+                {
+                    int segundos = await ObtenerConfiguracionEnteroAsync(uow, "SegundosApuestas", 20);
+                    IniciarTemporizadorApuestas(mesa, segundos);
+                    await _notificador.EnviarMensajeAsync(idSala, $"Las apuestas cierran en {segundos} segundos.");
+                }
 
                 await _notificador.EnviarEstadoAsync(idSala, CrearEstado(mesa));
                 return Respuesta<bool>.Ok(true);
@@ -309,45 +322,6 @@ namespace Casino_LogicaNegocios.Implementaciones
         }
 
         
-        // INICIAR RONDA MANUALMENTE (sin esperar a los que no apostaron)
-        
-        public async Task<Respuesta<bool>> IniciarRondaAsync(int idSala, int idUsuario)
-        {
-            var mesa = MesaActiva(idSala);
-            if (mesa == null)
-                return Respuesta<bool>.Fail("Primero entra a la mesa.");
-
-            await mesa.Candado.WaitAsync();
-            using var scope = _scopeFactory.CreateScope();
-            var uow = scope.ServiceProvider.GetRequiredService<IUnidadTrabajoEF>();
-
-            try
-            {
-                if (mesa.Buscar(idUsuario) == null)
-                    return Respuesta<bool>.Fail("No estás en esta mesa.");
-
-                if (mesa.Fase != FasesMesa.Apuestas)
-                    return Respuesta<bool>.Fail("La ronda ya está en curso.");
-
-                if (!mesa.Jugadores.Any(j => j.Manos.Count > 0))
-                    return Respuesta<bool>.Fail("Nadie ha apostado todavía.");
-
-                await IniciarRondaInternaAsync(mesa, scope.ServiceProvider);
-                await _notificador.EnviarEstadoAsync(idSala, CrearEstado(mesa));
-
-                return Respuesta<bool>.Ok(true);
-            }
-            catch (Exception ex)
-            {
-                uow.Rollback();
-                _logger.LogError(ex, "Error al iniciar ronda en la mesa {IdSala}", idSala);
-                return Respuesta<bool>.Fail(ex.GetBaseException().Message);
-            }
-            finally
-            {
-                mesa.Candado.Release();
-            }
-        }
 
        
         // ACCIONES DEL JUGADOR: Pedir, Plantarse, Doblar, Dividir 
@@ -542,6 +516,9 @@ namespace Casino_LogicaNegocios.Implementaciones
         private async Task IniciarRondaInternaAsync(MesaBlackjack mesa, IServiceProvider sp)
         {
             var uow = sp.GetRequiredService<IUnidadTrabajoEF>();
+
+            // Ya se reparte: el tiempo de apuestas termina
+            CancelarTemporizadorApuestas(mesa);
 
             mesa.SegundosPorTurno = await ObtenerConfiguracionEnteroAsync(uow, "SegundosPorTurno", 30);
 
@@ -851,9 +828,81 @@ namespace Casino_LogicaNegocios.Implementaciones
             }
         }
 
-        
+        // =====================================================================
+        // TEMPORIZADOR DE APUESTAS (el dealer reparte solo)
+        // =====================================================================
+
+        // Arranca con la primera apuesta: los demás tienen X segundos para apostar
+        private void IniciarTemporizadorApuestas(MesaBlackjack mesa, int segundos)
+        {
+            var cts = new CancellationTokenSource();
+            mesa.TemporizadorApuestas = cts;
+
+            segundos = Math.Max(5, segundos);
+            mesa.FinApuestasUtc = DateTime.UtcNow.AddSeconds(segundos);
+            var token = cts.Token;
+
+            // Corre en segundo plano: si no lo cancelan antes, se reparte al terminar
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(segundos), token);
+                    await TiempoApuestasAgotadoAsync(mesa, cts);
+                }
+                catch (OperationCanceledException) { }   // todos apostaron antes de tiempo
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error en el tiempo de apuestas de la mesa {IdSala}", mesa.IdSala);
+                }
+            });
+        }
+
+        private static void CancelarTemporizadorApuestas(MesaBlackjack mesa)
+        {
+            mesa.TemporizadorApuestas?.Cancel();
+            mesa.TemporizadorApuestas = null;
+            mesa.FinApuestasUtc = null;
+        }
+
+        // Se acabó el tiempo de apuestas: se reparte con los que apostaron
+        private async Task TiempoApuestasAgotadoAsync(MesaBlackjack mesa, CancellationTokenSource cts)
+        {
+            await mesa.Candado.WaitAsync();
+            using var scope = _scopeFactory.CreateScope();
+            var uow = scope.ServiceProvider.GetRequiredService<IUnidadTrabajoEF>();
+
+            try
+            {
+                // Comprobar que sigue siendo el mismo contador y que nadie repartió mientras esperábamos
+                if (mesa.Cerrada || mesa.TemporizadorApuestas != cts || mesa.Fase != FasesMesa.Apuestas)
+                    return;
+
+                mesa.TemporizadorApuestas = null;
+                mesa.FinApuestasUtc = null;
+
+                if (mesa.Jugadores.Any(j => j.Manos.Count > 0))
+                {
+                    await _notificador.EnviarMensajeAsync(mesa.IdSala, "Se acabó el tiempo de apuestas. ¡Se reparte!");
+                    await IniciarRondaInternaAsync(mesa, scope.ServiceProvider);
+                }
+
+                await _notificador.EnviarEstadoAsync(mesa.IdSala, CrearEstado(mesa));
+            }
+            catch (Exception ex)
+            {
+                uow.Rollback();
+                _logger.LogError(ex, "Error al cerrar las apuestas de la mesa {IdSala}", mesa.IdSala);
+            }
+            finally
+            {
+                mesa.Candado.Release();
+            }
+        }
+
+
         // AL ARRANCAR LA API: devolver fichas de rondas que quedaron a medias
-       
+
         public async Task CancelarRondasPendientesAsync()
         {
             using var scope = _scopeFactory.CreateScope();
@@ -946,6 +995,7 @@ namespace Casino_LogicaNegocios.Implementaciones
             {
                 mesa.Cerrada = true;
                 CancelarTemporizador(mesa);
+                CancelarTemporizadorApuestas(mesa);
                 _mesas.TryRemove(mesa.IdSala, out _);
 
                 if (mesa.IdRondaActual != null)
@@ -1083,7 +1133,8 @@ namespace Casino_LogicaNegocios.Implementaciones
                 PuntosDealer = puntosDealer,
                 Jugadores = jugadores,
                 TurnoIdUsuario = mesa.TurnoJugador >= 0 ? mesa.Jugadores[mesa.TurnoJugador].IdUsuario : null,
-                FinTurnoUtc = mesa.FinTurnoUtc
+                FinTurnoUtc = mesa.FinTurnoUtc,
+                FinApuestasUtc = mesa.FinApuestasUtc
             };
         }
 

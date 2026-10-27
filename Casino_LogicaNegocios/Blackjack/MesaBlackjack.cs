@@ -29,6 +29,11 @@ namespace Casino_LogicaNegocios.Blackjack
         public int SegundosPorTurno { get; set; } = 30;
         public CancellationTokenSource? Temporizador { get; set; }
 
+
+        // Tiempo para apostar: arranca con la primera apuesta de la ronda
+        public DateTime? FinApuestasUtc { get; set; }
+        public CancellationTokenSource? TemporizadorApuestas { get; set; }
+
         public bool Cerrada { get; set; }
 
         public MesaBlackjack(int idSala, string codigoSala, string nombreSala)
